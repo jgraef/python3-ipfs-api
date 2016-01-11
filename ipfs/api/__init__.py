@@ -1,8 +1,10 @@
+from . import codec
 from .proxy import HttpProxy
 from .block import BlockApi
 from .dht import DhtApi
 from .object import ObjectApi
-from . import codec
+from .config import ConfigApi
+
 
 
 class IpfsApi:
@@ -13,6 +15,7 @@ class IpfsApi:
         self.block = BlockApi(r)
         self.dht = DhtApi(r)
         self.object = ObjectApi(r)
+        self.config = ConfigApi(r)
 
 
     def id(self):

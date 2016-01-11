@@ -18,6 +18,11 @@ def test_id():
     print(repr(resp))
 
 
+def test_config_show():
+    resp = ipfs.config.show()
+    print(repr(resp))
+
+
 def test_version():
     resp = ipfs.version()
     print(repr(resp))
@@ -93,8 +98,10 @@ def test_object_patch_set_data():
 
 
 if (__name__ == "__main__"):
-    test_id()
+    #test_id()
     #test_version()
+
+    test_config_show()
     
     #test_block_stat()
     #test_block_get()
