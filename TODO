@@ -1,6 +1,6 @@
 ## TODO
 
- * Implemented lowlevel APIs: file, name, pin, swarm
+ * Implemented lowlevel APIs: file, name, pin, swarm, config
  * Port high-level merkledag API
  * Implement high-level unixfs API
  * Fix object.patch
