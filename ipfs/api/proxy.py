@@ -68,6 +68,7 @@ class OutputEncodingProxy(Proxy):
 
 class HttpProxy:
     ENDPOINT = "/api/v0"
+    DEBUG = False
     
     def __init__(self, host, port):
         self.base_url = "http://{}:{:d}{}".format(host, port, self.ENDPOINT)
@@ -91,24 +92,26 @@ class HttpProxy:
             input_files = None
             method = "GET"
 
-        print()
-        print("Request: {} {}".format(method, "(has body)" if (f_in) else ""))
-        print("URL: {}".format(url))
-        if (params):
-            print("Parameters:")
-            for k, v in params:
-                print("  {}: {}".format(k, v))
-        print()
+        if (self.DEBUG):
+            print()
+            print("Request: {} {}".format(method, "(has body)" if (f_in) else ""))
+            print("URL: {}".format(url))
+            if (params):
+                print("Parameters:")
+                for k, v in params:
+                    print("  {}: {}".format(k, v))
+            print()
 
         resp = requests.request(method, url, params = params, files = input_files, stream = True)
 
         if (resp.status_code != 200):
             raise ProxyError(resp.text)
 
-        print("Response Headers:")
-        for k, v in resp.headers.items():
-            print("{}: {}".format(k, v))
-        print()
+        if (self.DEBUG):
+            print("Response Headers:")
+            for k, v in resp.headers.items():
+                print("{}: {}".format(k, v))
+            print()
 
         return resp.raw
 
