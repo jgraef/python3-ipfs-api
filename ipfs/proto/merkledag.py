@@ -5,7 +5,7 @@ from base58 import b58encode, b58decode
 PBLink = Pb2Message("PBLink")\
          .field("optional", "bytes", "Hash", 1, (b58encode, b58decode))\
          .field("optional", "string", "Name", 2)\
-         .field("optional", "uint64", "Tsize", 3)
+         .field("optional", "uint64", "Size", 3)
 
 PBNode = Pb2Message("PBNode")\
          .field("repeated", "PBLink", "Links", 2)\
