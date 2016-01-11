@@ -14,5 +14,13 @@ Soon I'll also include my abstraction of the merkledag and an abstraction layer 
 This software is still work in progress. Use the original python-ipfs-api (https://github.com/ipfs/python-ipfs-api)
 where possible.
 
-See test.py on how to use the parts that already work.
+See testing/tests_* on how to use the parts that already work.
+
+
+### To-dos
+- @mec-is: Split the testing/test_ipfsapi.py in different files for each API
+- See todos in line in the files
+- Fill the RST templates for docstring in the classes and methods
+
+
 
