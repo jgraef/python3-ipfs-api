@@ -1,3 +1,7 @@
+"""
+This module handles proxies, it can be considered the 'pivot' of the package
+"""
+
 import requests
 from io import BytesIO
 
@@ -7,6 +11,9 @@ class ProxyError(Exception):
 
 
 class Proxy:
+    """
+    #todo: add docstring
+    """
     def __init__(self, rootProxy, path):
         self.rootProxy = rootProxy
         self.path = path
@@ -27,14 +34,27 @@ class Proxy:
         return "Proxy({!r})".format(self.path)
 
     def with_inputenc(self, inputenc):
+        """
+
+        :param inputenc:
+        :return:
+        """
         return InputEncodingProxy(self, inputenc)
 
     def with_outputenc(self, outputenc):
+        """
+
+        :param outputenc:
+        :return:
+        """
         return OutputEncodingProxy(self, outputenc)
 
 
 
 class InputEncodingProxy(Proxy):
+    """
+    #todo: add docstring
+    """
     def __init__(self, parent, inputenc):
         Proxy.__init__(self, parent.rootProxy, parent.path)
         self.parent = parent
@@ -43,6 +63,8 @@ class InputEncodingProxy(Proxy):
     def __call__(self, *args, _in = None, **opts):
         if (_in):
             # TODO: Replace this with something better
+            #todo: mec-is: I will if you first will let me know what this
+            # callable is supposed to be doing by writing a decent docstring... (;
             buf = BytesIO()
             _in = self.inputenc.dump(_in, buf)
             buf.seek(0)
@@ -54,6 +76,9 @@ class InputEncodingProxy(Proxy):
 
 
 class OutputEncodingProxy(Proxy):
+    """
+    #todo: add docstring
+    """
     def __init__(self, parent, outputenc):
         Proxy.__init__(self, parent.rootProxy, parent.path)
         self.parent = parent
@@ -67,6 +92,9 @@ class OutputEncodingProxy(Proxy):
 
 
 class HttpProxy:
+    """
+    #todo: add docstring
+    """
     ENDPOINT = "/api/v0"
     DEBUG = False
     
@@ -76,6 +104,14 @@ class HttpProxy:
 
 
     def _call_endpoint(self, path, args, opts, f_in):
+        """
+
+        :param path:
+        :param args:
+        :param opts:
+        :param f_in:
+        :return:
+        """
         params = []
         for arg in args:
             params.append(("arg", arg))
