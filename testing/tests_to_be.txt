@@ -1,0 +1,61 @@
+
+KEY1 = "QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn"
+KEY2 = "QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm"
+
+# ipfs object new
+# echo "Non-existant key, because I will not pin it and run ipfs repo gc" | ipfs object patch QmdfTbBqBPQ7VNxZEYEj14VmRuZBkqFbiwReogJgS1zR1n set-data
+# ipfs repo gc
+KEY_NONEXISTANT = "QmeKyCK4LtNyGVfTfJnnCLxxoaPnMwrYH8owoJDs5Z3EUT"
+
+KEY_INVALID = "QmeKyCK4LtNyGVfTfJnnCLxxoaPnMwrYH8owoJDs5Z3EU"
+
+NODE_ONLY_DATA = {'Data': b'Hello World'}
+NODE_ONLY_LINKS = {'Links': [{"Hash": KEY1, "Name": "foo"}]}
+NODE_BOTH = {'Data': b'Hello World', 'Links': [{"Hash": KEY1, "Name": "foo"}]}
+NODE_EMPTY = {}
+NODE_INVALID = {"Data": b"foo", "bar": "baz"}
+
+
+## object get
+
+ipfs.object.get key existing(1):
+{'Links': [{'Size': 4118930, 'Hash': 'QmdoDatULjkor1eA1YhBAjmKkkDr7AGEiTrANh7uK17Hfn', 'Name': 'bundle.js'}, {'Size': 4761372, 'Hash': 'QmUVYznSyVB32u6jjCjcXmZb7byv832PUC3tuGAJg6SUQz', 'Name': 'bundle.js.map'}, {'Size': 485, 'Hash': 'QmNh5CNBdFkVsALDqzU6AvbFAJd8LpjBV7voojQq95nKDA', 'Name': 'index.html'}, {'Size': 2506050, 'Hash': 'QmP5BvrMtqWGirZYyHgz77zhEzLiJbonZVdHPMJRM1xe8G', 'Name': 'static'}, {'Size': 181436, 'Hash': 'QmecBJMFtTsn4RawUcqFGudevEWcDUym4b6FtemLtKhZy7', 'Name': 'style.css'}], 'Data': b'\x08\x01'}
+
+ipfs.object.get key invalid:
+{}
+
+
+## object data
+
+ipfs.object.data key existing(1):
+b'\x08\x01'
+
+ipfs.object.data key invalid:
+ipfs.api.proxy.ProxyError: {"Message":"invalid ipfs ref path","Code":0}
+
+
+## object links
+
+ipfs.object.data key existing(1):
+{'Hash': 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', 'Links': []}
+
+ipfs.object.data key invalid:
+ipfs.api.proxy.ProxyError: {"Message":"invalid ipfs ref path","Code":0}
+
+
+## object  put
+
+ipfs.object.put only data
+{'Hash': 'QmXy2pAWQ3Ef1PqZqi4Z9TJnpDh1trdkCqAvzBgKNNRrSR', 'Links': []}
+
+ipfs.object.put only links
+{'Hash': 'QmSbMLp9AchTQLpNMeVSieFFMLR32uGe19nU3YQLSbsF7z', 'Links': [{'Hash': 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', 'Name': 'foo', 'Size': 0}]}
+
+ipfs.object.put both
+{'Hash': 'QmU4vq6wLntyYobVQeNBeySm9GRU28gmWvKxyYE7q59rHa', 'Links': [{'Hash': 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn', 'Name': 'foo', 'Size': 0}]}
+
+ipfs.object.put empty
+ipfs.api.proxy.ProxyError: File argument 'data' is required
+
+ipfs.object.put invalid
+ipfs.pb2hack.error.Pb2WriterException: Unknown field name bar
