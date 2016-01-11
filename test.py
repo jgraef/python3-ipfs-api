@@ -68,6 +68,18 @@ def test_object_new():
     resp = ipfs.object.new()
     print(repr(resp))
 
+def test_object_patch_add_link():
+    resp = ipfs.object.patch(KEY1).add_link("foo", KEY2)
+    print(repr(resp))
+
+def test_object_patch_rm_link():
+    resp = ipfs.object.patch(KEY2).rm_link("index.html")
+    print(repr(resp))
+
+def test_object_patch_set_data():
+    resp = ipfs.object.patch(KEY1).set_data(BytesIO(b"foobar"))
+    print(repr(resp))
+
 
 if (__name__ == "__main__"):
     #test_block_stat()
@@ -84,3 +96,8 @@ if (__name__ == "__main__"):
     #test_object_put()
     #test_object_stat()
     #test_object_new()
+
+    #test_object_patch_add_link()
+    #test_object_patch_rm_link()
+    #test_object_patch_set_data() TODO Not implemented
+    

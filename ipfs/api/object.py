@@ -12,19 +12,19 @@ class ObjectPatchApi:
 
 
     def add_link(self, name, ref):
-        pass
+        return self._rpc.with_outputenc(JSON)("add-link", name, ref)
 
 
     def rm_link(self, name):
-        pass
+        return self._rpc.with_outputenc(JSON)("rm-link", name)
 
 
     def set_data(self, f):
-        pass
+        raise NotImplementedError()
 
 
     def append_data(self, f):
-        pass
+        raise NotImplementedError()
 
 
 
