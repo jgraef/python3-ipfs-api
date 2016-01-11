@@ -40,3 +40,17 @@ class IpfsApi:
         return self._rpc.repo.gc.with_outputenc(codec.JSONV)()
 
 
+
+__all__ = [
+    "block",
+    "codec",
+    "config",
+    "dht",
+    "file",
+    "name",
+    "object",
+    "pin",
+    "proxy",
+    "swarm",
+    "IpfsApi"
+]

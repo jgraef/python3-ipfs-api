@@ -1,2 +1,2 @@
 
-__all__ = ["codec", "error", "protocol", "reader", "writer"]
+__all__ = ["error", "protocol", "reader", "writer"]

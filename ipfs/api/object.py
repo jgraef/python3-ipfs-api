@@ -59,3 +59,9 @@ class ObjectApi:
     
     def patch(self, key):
         return ObjectPatchApi(self._rpc, key)
+
+
+__all__ = [
+    "ObjectPatchApi",
+    "ObjectApi"
+]

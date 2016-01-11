@@ -161,3 +161,10 @@ class Pb2Reader:
             return enum.defs[wire_val]
         except KeyError:
             raise Pb2ReaderException("Value {:d} doesn't match any enum value in {}".format(wire_val, enum.name))
+
+
+
+__all__ = [
+    "Pb2WireReader",
+    "Pb2Reader"
+]

@@ -16,3 +16,6 @@ class FileApi:
 
     def cat(self, path):
         return self._rpc.cat[path]()
+
+
+__all__ = ["FileApi"]

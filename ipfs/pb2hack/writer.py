@@ -121,3 +121,9 @@ class Pb2Writer:
     def write_field_enum(self, field_number, val, enum):
         self.wire.write_key(field_number, 0)
         self.wire.write_varint(val)
+
+
+__all__ = [
+    "Pb2WireWriter",
+    "Pb2Writer"
+]

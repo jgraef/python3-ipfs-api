@@ -14,3 +14,11 @@ PBNode = Pb2Message("PBNode")\
 PBMerkleDag = Pb2Protocol()\
               .message(PBLink)\
               .message(PBNode)
+
+
+
+__all__ = [
+    "PBLink",
+    "PBNode",
+    "PBMerkleDag"
+]

@@ -24,3 +24,6 @@ class DhtApi:
 
     def put(self, key, value):
         return self._rpc.get[key].with_outputenc(codec.JSONV)(value)
+
+
+__all__ = ["DhtApi"]

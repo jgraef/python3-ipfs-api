@@ -97,3 +97,10 @@ class Pb2Protocol:
 
     def __add__(self, other):
         return self.join(other)
+
+
+__all__ = [
+    "Pb2Enum",
+    "Pb2Message",
+    "Pb2Protocol"
+]

@@ -16,3 +16,7 @@ class BlockApi:
 
     def put(self, f):
         return self._rpc.put.with_outputenc(codec.JSON)(_in = f)
+
+
+__all__ = ["BlockApi"]
+	

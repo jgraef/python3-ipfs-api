@@ -10,3 +10,4 @@ class ConfigApi:
         return self._rpc.show.with_outputenc(codec.JSON)()
 
 
+__all__ = ["ConfigApi"]

@@ -13,3 +13,6 @@ class NameApi:
     def resolve(self, name = None, recursive = True, nocache = False):
         args = (name,) if name else ()
         return self._rpc.resolve.with_outputenc(codec.JSON)(*args, recursive = recursive, nocache = nocache)
+
+
+__all__ = ["NameApi"]

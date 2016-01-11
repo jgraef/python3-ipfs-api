@@ -16,3 +16,6 @@ class PinApi:
 
     def ls(self):
         return self._rpc.ls.with_outputenc(codec.JSON)()
+
+
+__all__ = ["PinApi"]

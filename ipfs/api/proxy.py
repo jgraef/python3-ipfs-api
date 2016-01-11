@@ -114,3 +114,12 @@ class HttpProxy:
             print()
 
         return resp.raw
+
+
+__all__ = [
+    "ProxyError",
+    "Proxy",
+    "InputEncodingProxy",
+    "OutputEncodingProxy",
+    "HttpProxy"
+]

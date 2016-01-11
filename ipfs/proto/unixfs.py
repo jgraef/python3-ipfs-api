@@ -16,3 +16,10 @@ Data = Pb2Message("Data")\
 
 Metadata = Pb2Message("Metadata")\
            .field("required", "string", "MimeType", 1)
+
+
+__all__ = [
+    "DataType",
+    "Data",
+    "Metadata"
+]
