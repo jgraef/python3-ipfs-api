@@ -1,12 +1,18 @@
 #!/usr/bin/python3
 
-import termcolor
 import sys
+
+try:
+    import termcolor
+except ImportError:
+    termcolor = None
+    
+
 
 
 def print_hexdump(data, offset = 0, file = sys.stdout, colored = False):
     def color(s, c):
-        return termcolor.colored(s, c) if (colored) else s
+        return termcolor.colored(s, c) if (colored and termcolor) else s
 
     def format_hex(x):
         return "%02x" % x
