@@ -79,7 +79,7 @@ class HttpProxy:
         for arg in args:
             params.append(("arg", arg))
         for opt_key, opt_val in opts.items():
-            params.append((opt_key, opt_val))
+            params.append((opt_key, str(opt_val)))
 
         url = self.base_url + path
 

@@ -96,12 +96,16 @@ def test_object_patch_set_data():
     resp = ipfs.object.patch(KEY1).set_data(BytesIO(b"foobar"))
     print(repr(resp))
 
+def test_resolve():
+    resp = ipfs.resolve(KEY2 + "/static")
+    print(repr(resp))
+
 
 if (__name__ == "__main__"):
     #test_id()
     #test_version()
 
-    test_config_show()
+    #test_config_show()
     
     #test_block_stat()
     #test_block_get()
@@ -120,5 +124,6 @@ if (__name__ == "__main__"):
 
     #test_object_patch_add_link()
     #test_object_patch_rm_link()
-    #test_object_patch_set_data() TODO Not implemented
+    #test_object_patch_set_data() TODO Not implemented\
     
+    test_resolve()

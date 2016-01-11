@@ -24,3 +24,7 @@ class IpfsApi:
 
     def version(self):
         return self._rpc.version.with_outputenc(codec.JSON)()
+
+
+    def resolve(self, ref, recursive = True):
+        return self._rpc.resolve.with_outputenc(codec.JSON)(ref, recursive = recursive)
