@@ -4,6 +4,7 @@ from .block import BlockApi
 from .dht import DhtApi
 from .object import ObjectApi
 from .config import ConfigApi
+from .name import NameApi
 
 
 
@@ -16,6 +17,7 @@ class IpfsApi:
         self.dht = DhtApi(r)
         self.object = ObjectApi(r)
         self.config = ConfigApi(r)
+        self.name = NameApi(r)
 
 
     def id(self):
@@ -28,3 +30,6 @@ class IpfsApi:
 
     def resolve(self, ref, recursive = True):
         return self._rpc.resolve.with_outputenc(codec.JSON)(ref, recursive = recursive)
+
+    def repo_gc(self):
+        return self._rpc.repo.gc.with_outputenc(codec.JSONV)()
