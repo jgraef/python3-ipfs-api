@@ -1,9 +1,11 @@
+# coding=utf-8
 """
 Tests:
+ - class refactored with the first test case
  - by now they are all flagged "skipped", unflag the ones to be performed
 
 Usage:
-    python3 tests.py
+    python3 test_ipfsapi.py
 """
 
 import unittest
@@ -25,13 +27,14 @@ class TestIPFS(unittest.TestCase):
     def setUp(self):
         self.ipfs = IpfsApi()
 
-    def test_sohuld_return_json_of_root(self):
+    def test_should_return_json_of_root(self):
+        """ Use the id() method to retrieve the node's root"""
         resp = self.ipfs.id()
-
         test_fields = ('Addresses', 'ProtocolVersion', 'ID', 'PublicKey', )
         self.assertTrue(
             all(k in resp.keys() for k in test_fields)
         )
+        # print(repr(resp))
 
     @unittest.skip("debug")
     def test_config_show(self):
