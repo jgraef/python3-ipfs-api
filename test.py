@@ -12,6 +12,17 @@ NODE = {'Data': b'Hello World'}
 ipfs = IpfsApi()
 
 
+
+def test_id():
+    resp = ipfs.id()
+    print(repr(resp))
+
+
+def test_version():
+    resp = ipfs.version()
+    print(repr(resp))
+
+
 def test_block_stat():
     resp = ipfs.block.stat(KEY1)
     print(repr(resp))
@@ -82,6 +93,9 @@ def test_object_patch_set_data():
 
 
 if (__name__ == "__main__"):
+    test_id()
+    #test_version()
+    
     #test_block_stat()
     #test_block_get()
     #test_block_put()
