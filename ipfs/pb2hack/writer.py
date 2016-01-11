@@ -70,7 +70,7 @@ class Pb2Writer:
 
 
     def write_field(self, field, val):
-        if (field):
+        if (field.filter):
             val = field.filter[1](val)
         writer = self._write_field_type.get(field.type)
         if (writer):
