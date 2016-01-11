@@ -5,6 +5,7 @@ from .dht import DhtApi
 from .object import ObjectApi
 from .config import ConfigApi
 from .name import NameApi
+from .pin import PinApi
 
 
 
@@ -18,6 +19,7 @@ class IpfsApi:
         self.object = ObjectApi(r)
         self.config = ConfigApi(r)
         self.name = NameApi(r)
+        self.pin = PinApi(r)
 
 
     def id(self):
