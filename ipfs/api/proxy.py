@@ -114,19 +114,3 @@ class HttpProxy:
             print()
 
         return resp.raw
-
-
-    def _encode_input(self, input_data, inputenc):
-        if (inputenc):
-            print("Encoding as {}".format(encoding))
-            body, inputenc_headers = inputenc.dump(input_data)
-        return body
-
-
-    def _decode_output(self, resp, outputenc):
-        if (encoding):
-            print("Decoding as {}".format(encoding))
-            return outputenc.load(resp, headers)
-        else:
-            return resp
-        
