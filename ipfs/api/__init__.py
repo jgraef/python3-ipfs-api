@@ -1,3 +1,8 @@
+"""
+This modules exposes the IPFS HTTP API to Python.
+"""
+
+
 from . import codec
 from .proxy import HttpProxy
 from .block import BlockApi
@@ -11,7 +16,25 @@ from .file import FileApi
 
 
 class IpfsApi:
+    """
+    An wrapper for the IPFS HTTP API. It exposes sub-commands and top-level
+    commands and wraps them with the appropiate encodings.
+
+    Try::
+
+       key = "QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"
+       print(IpfsApi().file.cat(key).read().decode())
+
+    """
+
     def __init__(self, host = "localhost", port = 5001):
+        """
+        Create an instance of an IPFS API.
+
+        :param host: The hostname where the API is running.
+        :param port: The port which the API is listening to.
+        """
+
         self._proxy = HttpProxy(host, port)
         self._rpc = r = self._proxy.root
         
@@ -29,15 +52,13 @@ class IpfsApi:
         Return information about the specified IPFS peer. If no peer is
         specified, own peer information will be returned.
 
-        ``peer_id``: Peer ID of node to look up (optional)
-
-        returns: A dict with:
-                   ``ID``:              The peer's ID
-                   ``PublicKey``:       The peer's public key encoded as base64
-                   ``Addresses``:       A list of the peer's addresses,
-                   ``AgentVersion``:    The peer's agent version
-                   ``ProtocolVersion``: The peer's protocol version
-                   
+        :param peer_id: Peer ID of node to look up (optional)
+        :return:        A dict with:
+           ``ID``:              The peer's ID
+           ``PublicKey``:       The peer's public key encoded as base64
+           ``Addresses``:       A list of the peer's addresses
+           ``AgentVersion``:    The peer's agent version
+           ``ProtocolVersion``: The peer's protocol version
         """
 
         args = (peer_id,) if peer_id else ()
@@ -48,26 +69,38 @@ class IpfsApi:
         """
         Return IPFS version information.
 
-        returns: A dict with:
-                   ``Version``: Version number,
-                   ``Commit``:  Commit hash,
-                   ``Repo``:    Repo version
+        :return: A dict with:
+           ``Version``: Version number
+           ``Commit``:  Commit hash
+           ``Repo``:    Repo version
+
+        Example::
+
+           >>> ipfs.version()
+           {'Commit': '', 'Repo': '2', 'Version': '0.3.11-dev'}
+
         """
 
         return self._rpc.version.with_outputenc(codec.JSON)()
 
 
-    def resolve(self, ref, recursive = True):
+    def resolve(self, name, recursive = True):
         """
         Resolve a name.
 
-        ``name``:      The name to resolve
-        ``recursive``: Resolve until the name is an IPFS name
+        :param name:      The name to resolve
+        :param recursive: Resolve until the name is an IPFS name
+        :return:          The resolved IPFS name
 
-        returns: The resolved IPFS name
+        Example::
+
+           >>> name = "QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec/readme"
+           >>> IpfsApi().resolve(name)
+           {'Path': '/ipfs/QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB'}
+        
         """
         
-        return self._rpc.resolve.with_outputenc(codec.JSON)(ref, recursive = recursive)
+        return self._rpc.resolve.with_outputenc(codec.JSON)(name, recursive = recursive)
 
 
     def repo_gc(self):

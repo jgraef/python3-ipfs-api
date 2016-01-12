@@ -10,11 +10,12 @@ class DhtApi:
         self._rpc = root.dht
 
 
-    def query(self, key):
+    def query(self, peer_id):
         """
+        Run a 'findClosestPeers' query through the DHT.
 
-        :param key:
-        :return:
+        :param peer_id: The peer ID to run the query against
+        :return: The closest peers
         """
         return self._rpc.query[key].with_outputenc(codec.JSONV)()
 

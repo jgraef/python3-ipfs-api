@@ -1,18 +1,20 @@
+"""
+This module handles the utilities to read and write to the IPFS node's config.
+"""
+
 from . import codec
 
 
 class ConfigApi:
-    """
-    #todo: add docstring
-    """
     def __init__(self, root):
         self._rpc = root.config
 
 
     def show(self):
         """
+        Return the current configuration
 
-        :return:
+        :return: The current configuration as dict.
         """
         return self._rpc.show.with_outputenc(codec.JSON)()
 
