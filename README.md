@@ -4,6 +4,8 @@ This is a complete rewrite of python-ipfs-api. It defines a whole new interface
 and tries to do more than just wrapping the HTTP API. python3-ipfs-api will
 only support Python 3 (hence the name).
 
+Documentation is available here: http://python3-ipfs-api.readthedocs.org/en/latest/
+
 python3-ipfs-api uses requests to issue API calls. Also it has a minimal
 implementation of a protobuf reader/writer for using protobuf encoding where
 possible. This makes it possible to e.g. put/get objects with binary content
