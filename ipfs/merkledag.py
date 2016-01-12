@@ -1,14 +1,13 @@
 """
 This module is a high-level abstraction to the ipfs.object API.
 
-It provides a pythonic way of interacting with merkledag nodes (a.k.a objects).
+It provides a pythonic way of interacting with merkledag nodes (a.k.a. objects).
 
 To run the following examples start with::
 
-   from ipfs.api import IpfsApi
-   from ipfs.merkledag import Merkledag
-   
-   dag = Merkledag(IpfsApi())
+   >>> from ipfs.api import IpfsApi
+   >>> from ipfs.merkledag import Merkledag
+   >>> dag = Merkledag(IpfsApi())
 
 """
 
@@ -28,19 +27,20 @@ class Link:
 
     def follow(self):
         """
-        Return the references node.
+        Return the referenced node.
 
         Example::
 
            >>> node = dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
            >>> link = node.get_link("readme")
            >>> readme = link.follow()
+           >>> readme
            Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
            >>> readme.data[5:22].decode()
            'Hello and Welcome'
 
-        Normally you don't have to interact with links directly. You can
-        directly follow links by referencing attributes of a Node.
+        Normally you don't have to interact with links. You can directly
+        follow links by referencing attributes of a Node.
         """
         
         return self._dag.get(self.hash)
@@ -125,8 +125,8 @@ class Node:
         The data contained in this node.
 
         At this moment merkledag nodes always contain bytes objects. This could
-        be changed in future (i.e store any pickable python object), but
-        backwads compability will not be broken.
+        be changed in the future (i.e store any pickable python object), but
+        backwards compability will not be broken.
         """
         self._lazy_load_data()
         return self._data
@@ -247,14 +247,14 @@ class NodeBuilder:
     Example::
     
        >>> c1 = dag.builder().data("Child 1").build()
-       >>> c2 = dag.builder().data("Child 2").link("next_sibling", c1).build()
+       >>> c2 = dag.builder().data("Child 2").link("sibling", c1).build()
        >>> r = dag.builder().data("Root")\
                .link("child_1", c1).link("child_2", c2).build()
        >>> r
-       Node(QmbvySvD2NUquHeK5bCx783xRNcVg1ULS6rtUzb2dErkdf)
+       Node(Qme2Fuk2YRNWwbhQ9G4d3GBAEQ5kL1r8P1b5RVx1HgZsco)
 
     Try exploring that in your DAG browser:
-    http://localhost:5001/ipfs/QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm/#/objects/object/\ipfs\QmbvySvD2NUquHeK5bCx783xRNcVg1ULS6rtUzb2dErkdf
+    http://localhost:5001/ipfs/QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm/#/objects/object/\ipfs\Qme2Fuk2YRNWwbhQ9G4d3GBAEQ5kL1r8P1b5RVx1HgZsco
     """
     
     def __init__(self, dag):
@@ -328,7 +328,7 @@ class Merkledag:
 
     To get a node try::
 
-       >>> dag = Merkledag()
+       >>> dag = Merkledag(IpfsApi())
        >>> dag["QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"]
        Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
 
