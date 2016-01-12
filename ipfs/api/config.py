@@ -6,6 +6,10 @@ from . import codec
 
 
 class ConfigApi:
+    """
+    Get and set IPFS config values
+    """
+
     def __init__(self, root):
         self._rpc = root.config
 

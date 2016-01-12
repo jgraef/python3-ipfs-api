@@ -57,8 +57,9 @@ class Node:
         A merkledag node is a node like in any other graph. It stores some data
         and can have multiple links (or edges) to other nodes.
 
-        To get a merkledag node call ``dag.get(ref)``, where ``ref`` can be
-        a ipfs or ipns name or a plain base58 hash of your node::
+        To get a merkledag node call ``dag.get(ref)`` or access it via
+        ``dag[ref]``, where ``ref`` can be a ipfs or ipns name or a plain
+        base58 hash of your node::
 
            >>> dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
            Node(QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec)
@@ -115,7 +116,7 @@ class Node:
 
     @property
     def ref(self):
-        """ The reference URL, e.g. "/ipfs/QmPXME1oRtoT627YKaDPDQ3PwA8tdP9rWuAAweLzqSwAWT". """
+        """ The reference URL, e.g. ``"/ipfs/QmPXME1oRtoT627YKaDPDQ3PwA8tdP9rWuAAweLzqSwAWT"``. """
         return "/ipfs/" + self.hash
 
 

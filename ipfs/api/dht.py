@@ -6,43 +6,50 @@ from . import codec
 
 
 class DhtApi:
+    """
+    Issue commands directly through the DHT.
+    """
+    
     def __init__(self, root):
         self._rpc = root.dht
 
 
     def query(self, peer_id):
         """
-        Run a 'findClosestPeers' query through the DHT.
+        Run a 'FindClosestPeers' query through the DHT.
 
         :param peer_id: The peer ID to run the query against
-        :return: The closest peers
+        :return: TODO
         """
         return self._rpc.query[key].with_outputenc(codec.JSONV)()
 
 
     def find_providers(self, key):
         """
+        Run a 'FindProviders' query through the DHT.
 
-        :param key:
-        :return:
+        :param key: The key to find providers for
+        :return: TODO
         """
         return self._rpc.findprovs[key].with_outputenc(codec.JSONV)()
 
 
-    def find_peers(self, peer_id):
+    def find_peer(self, peer_id):
         """
+        Run a 'FindPeer' query through the DHT.
 
-        :param peer_id:
-        :return:
+        :param peer_id: The peer to search for
+        :return: TODO
         """
         return self._rpc.findpeers[peer_id].with_outputenc(codec.JSONV)()
 
     
     def get(self, key):
         """
+        Run a 'GetValue' query through the DHT.
 
-        :param key:
-        :return:
+        :param key: The key to find a value for
+        :return: TODO
         """
         return self._rpc.get[key].with_outputenc(codec.JSONV)()
 

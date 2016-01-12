@@ -5,6 +5,10 @@ from . import codec
 
 
 class BlockApi:
+    """
+    Manipulate raw IPFS blocks.
+    """
+
     def __init__(self, root):
         self._rpc = root.block
 

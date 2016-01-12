@@ -1,5 +1,11 @@
 """
 This modules exposes the IPFS HTTP API to Python.
+
+To get started create an instance of :py:class:`IpfsApi`::
+
+   >>> from ipfs.api import IpfsApi
+   >>> ipfs = IpfsApi()
+
 """
 
 
@@ -20,10 +26,30 @@ class IpfsApi:
     An wrapper for the IPFS HTTP API. It exposes sub-commands and top-level
     commands and wraps them with the appropiate encodings.
 
-    Try::
+    Example::
 
-       key = "QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"
-       print(IpfsApi().file.cat(key).read().decode())
+       >>> key = "QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"
+       >>> print(IpfsApi().file.cat(key).read().decode())
+
+    IpfsApi exposes top-level command as its methods (e.g. :py:meth:`id`) and
+    sub-commands can be accessed via the name of the plumbing command (e.g.
+    :py:attr:`file`).
+
+    The following plumbing commands are available at the moment:
+
+       - :py:attr:`block`: Operations on raw blocks.
+
+       - :py:attr:`dht`: Operations on the DHT
+
+       - :py:attr:`object`: Operations on objects a.k.a merkledag nodes
+
+       - :py:attr:`config`: Operations on the configuration
+
+       - :py:attr:`name`: Name resolution and publishing
+
+       - :py:attr:`pin`: Pinning of blocks
+
+       - :py:attr:`file`: File operations
 
     """
 
