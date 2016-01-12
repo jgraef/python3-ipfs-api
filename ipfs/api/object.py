@@ -87,9 +87,9 @@ class ObjectApi:
         
         :param key: Key of the object to retrieve
         :return: A list of links that are dicts that may contain:
-              ``Name``: The name of that link
-              ``Hash``: The hash of the linked object
-              ``Size``: The size of the linked object
+            ``Name``: The name of that link
+            ``Hash``: The hash of the linked object
+            ``Size``: The size of the linked object
         """
         return self._rpc.links[key].with_outputenc(JSON)()
 
@@ -101,10 +101,7 @@ class ObjectApi:
         :param key: Key of the object to retrieve
         :return: A dict that may contain:
            ``Data``:  The raw data stored in this object, if any
-           ``Links``: See :py:meth:`~ipfs.api.object.ObjectApi.links`, if any.
-                      An object without links can cause the Links item to not
-                      exist, the Links item being None or the Links item being
-                      the empty list.
+           ``Links``: See :py:meth:`~ipfs.api.object.ObjectApi.links`, if any. An object without links can cause the Links item to not exist, the Links item being None or the Links item being the empty list.
         """
         return self._rpc.get[key].with_outputenc(PBNode)()
 
@@ -116,8 +113,7 @@ class ObjectApi:
         :param node: The node (a.k.a. object) to be stored
         :return: A dict with:
            ``Hash``:  The hash of the object
-           ``Links``: The links of the object.
-                      See :py:meth:`~ipfs.api.object.ObjectApi.get`.
+           ``Links``: The links of the object. See :py:meth:`~ipfs.api.object.ObjectApi.get`.
         """
         return self._rpc.put.with_inputenc(PBNode).with_outputenc(JSON)(_in = node)
 

@@ -9,4 +9,4 @@ more are coming.
 
 """
 
-__all__ = ["api", "pb2hack", "proto"]
+__all__ = ["api", "pb2hack", "proto", "merkledag"]

@@ -38,12 +38,9 @@ class PinApi:
         """
         List all pinned objects.
 
-        :return: A dict like this::
+        :return: See example
 
-           {"Keys": {
-               the_hash: {"Count": count, "Type": type}}
-               ...
-           }}
+        TODO: Example
         """
         return self._rpc.ls.with_outputenc(codec.JSON)()
 

@@ -255,7 +255,7 @@ class NodeBuilder:
        Node(Qme2Fuk2YRNWwbhQ9G4d3GBAEQ5kL1r8P1b5RVx1HgZsco)
 
     Try exploring that in your DAG browser:
-    http://localhost:5001/ipfs/QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm/#/objects/object/\ipfs\Qme2Fuk2YRNWwbhQ9G4d3GBAEQ5kL1r8P1b5RVx1HgZsco
+    http://localhost:5001/ipfs/QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm/#/objects/object/Qme2Fuk2YRNWwbhQ9G4d3GBAEQ5kL1r8P1b5RVx1HgZsco
     """
     
     def __init__(self, dag):

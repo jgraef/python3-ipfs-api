@@ -76,14 +76,6 @@ ipfs.api.proxy module
     :undoc-members:
     :show-inheritance:
 
-ipfs.api.swarm module
----------------------
-
-.. automodule:: ipfs.api.swarm
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------

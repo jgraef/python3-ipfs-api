@@ -16,7 +16,7 @@ possible. This makes it possible to e.g. put/get objects with binary content
 without a problem.
 
 In :py:mod:`ipfs.api` you'll find the lowlevel API implementation. The high-level API is
-still work in progess and only consists of the :py:mod:`ifps.merkledag` module. An
+still work in progess and only consists of the :py:mod:`ipfs.merkledag` module. An
 API for interfacing unixfs in a pythonic way will come soon.
 
 This software is still work in progress. Use the original python-ipfs-api

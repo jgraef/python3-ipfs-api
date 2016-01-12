@@ -143,6 +143,5 @@ __all__ = [
     "object",
     "pin",
     "proxy",
-    "swarm",
     "IpfsApi"
 ]
