@@ -1,4 +1,4 @@
-from ..pb2hack.protocol import Pb2Enum, Pb2Message, Pb2Protocol
+from pb2nano.protocol import Pb2Enum, Pb2Message, Pb2Protocol
 
 
 DataType = Pb2Enum("DataType") \

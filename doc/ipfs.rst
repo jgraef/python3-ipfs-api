@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
 
     ipfs.api
-    ipfs.pb2hack
     ipfs.proto
 
 Submodules

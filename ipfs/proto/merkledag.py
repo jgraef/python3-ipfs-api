@@ -1,4 +1,4 @@
-from ..pb2hack.protocol import Pb2Message, Pb2Protocol
+from pb2nano.protocol import Pb2Message, Pb2Protocol
 from base58 import b58encode, b58decode
 
 

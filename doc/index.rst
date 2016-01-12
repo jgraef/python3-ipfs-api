@@ -11,6 +11,10 @@ python3-ipfs-api is a complete rewrite of `python-ipfs-api
 and tries to do more than just wrapping the HTTP API. python3-ipfs-api will
 only support Python 3 (hence the name).
 
+python3-ipfs-api uses [requests](http://python-requests.org) to issue API calls. Also it uses a minimal implementation
+of a protobuf2 reader/writer (called [pb2nano](https://github.com/jgraef/python3-pb2nano)) for using protobuf encoding
+where possible. This makes it possible to e.g. put/get objects with binary content without a problem.
+
 python3-ipfs-api uses `requests <http://python-requests.org>`_ to issue API calls. Also it has a minimal
 implementation of a protobuf reader/writer for using protobuf encoding where
 possible. This makes it possible to e.g. put/get objects with binary content
