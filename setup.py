@@ -8,7 +8,7 @@ setup(name = "python3-ipfs-api",
 
       description = "Python API for the IPFS HTTP API",
 
-      author = "Janosch Gräf",
+      author = u"Janosch Gräf",
 
       author_email = "janosch.graef@gmx.net",
 

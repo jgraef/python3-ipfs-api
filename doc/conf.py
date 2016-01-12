@@ -52,8 +52,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'python3-ipfs-api'
-copyright = '2016, Janosch Gräf'
-author = 'Janosch Gräf'
+copyright = u'2016, Janosch Gräf'
+author = u'Janosch Gräf'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
