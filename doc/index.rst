@@ -25,7 +25,7 @@ This software is still work in progress. Use the original python-ipfs-api
 See testing/tests_* on how to use the parts that already work.
 
 
-..Contents:  .. toctree::  :maxdepth: 2
+.. Contents:  .. toctree::  :maxdepth: 2
 
 
 
