@@ -11,10 +11,8 @@ implementation of a protobuf reader/writer for using protobuf encoding where
 possible. This makes it possible to e.g. put/get objects with binary content
 without a problem.
 
-In ipfs.api you'll find the lowlevel API implementation. Block, DHT and parts
-of Object commands already work.
-
-There will be high-level APIs. Currently only ipfs.merkledag is available. An
+In ipfs.api you'll find the lowlevel API implementation. The high-level API is
+still work in progess and only consists of the ifps.merkledag module. An
 API for interfacing unixfs in a pythonic way will come soon.
 
 This software is still work in progress. Use the original python-ipfs-api
