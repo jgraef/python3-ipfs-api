@@ -56,10 +56,11 @@ class DhtApi:
 
     def put(self, key, value):
         """
-
-        :param key:
-        :param value:
-        :return:
+        Run a 'PutValue' query through the DHT.
+        
+        :param key:   The key to store the value at
+        :param value: The value to store
+        :return: TODO
         """
         return self._rpc.get[key].with_outputenc(codec.JSONV)(value)
 

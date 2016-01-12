@@ -107,10 +107,11 @@ class Pb2Reader:
         except EOFError:
             pass
 
-        # check if all required fields are present
+        # check if all required fields are present and put empty lists for
+        # non-present repeated fields.
         for field in self.message.fields_by_name.values():
-            if (field.label == "required"):
-                if (field.label not in obj):
+            if (field.label not in obj):
+                if (field.label == "required"):
                     raise Pb2ReaderException("Required field {} not present in {}".format(field.name, self.message.name))
 
         return obj

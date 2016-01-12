@@ -1,20 +1,50 @@
+"""
+Module containing the PinApi
+"""
+
 from . import codec
 
 
 class PinApi:
+    """ Pin and unpin objects to local storage. """
+    
     def __init__(self, root):
         self._rpc = root.pin
 
 
-    def add(self, ref):
-        return self._rpc.add.with_outputenc(codec.JSON)(ref)
+    def add(self, path):
+        """
+        Pin object to local storage.
+
+        :param path: Path of object to pin
+        :return:     A dict with:
+           ``Pinned``: List of hashes that have been pinned.
+        """
+        return self._rpc.add.with_outputenc(codec.JSON)(path)
 
 
-    def rm(self, ref):
-        return self._rpc.rm.with_outputenc(codec.JSON)(ref)
+    def rm(self, path):
+        """
+        Unpin object from local storage.
+
+        :param path: Path of object to unpin
+        :return:     A dict with:
+           ``Pinned``: List of hashes that have been unpinned.
+        """
+        return self._rpc.rm.with_outputenc(codec.JSON)(path)
 
 
     def ls(self):
+        """
+        List all pinned objects.
+
+        :return: A dict like this::
+
+           {"Keys": {
+               the_hash: {"Count": count, "Type": type}}
+               ...
+           }}
+        """
         return self._rpc.ls.with_outputenc(codec.JSON)()
 
 

@@ -86,9 +86,7 @@ class IpfsApi:
            ``AgentVersion``:    The peer's agent version
            ``ProtocolVersion``: The peer's protocol version
         """
-
-        args = (peer_id,) if peer_id else ()
-        return self._rpc.id.with_outputenc(codec.JSON)(*args)
+        return self._rpc.id.with_outputenc(codec.JSON)(peer_id)
 
 
     def version(self):
@@ -110,12 +108,12 @@ class IpfsApi:
         return self._rpc.version.with_outputenc(codec.JSON)()
 
 
-    def resolve(self, name, recursive = True):
+    def resolve(self, name, recursive = None):
         """
         Resolve a name.
 
         :param name:      The name to resolve
-        :param recursive: Resolve until the name is an IPFS name
+        :param recursive: Resolve until the name is an IPFS name (default: true)
         :return:          The resolved IPFS name
 
         Example::
