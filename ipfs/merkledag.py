@@ -16,7 +16,22 @@ from threading import Lock
 
 
 class Link:
-    """ A link in the merkledag that links another node. """
+    """
+    A link in the merkledag that links another node.
+
+    .. py:attribute:: name
+
+       The link name
+    
+    .. py:attribute:: hash
+
+       The linked node's hash
+       
+    .. py:attribute:: size
+
+       Size of the node (optional, might be 0)
+       
+    """
     
     def __init__(self, dag, name, hash, size):
         self._dag = dag
@@ -52,29 +67,47 @@ class Link:
 
 
 class Node:
-    """ A merkledag node (a.k.a object).
+    """
+    A merkledag node (a.k.a object).
 
-        A merkledag node is a node like in any other graph. It stores some data
-        and can have multiple links (or edges) to other nodes.
+    A merkledag node is a node like in any other graph. It stores some data
+    and can have multiple links (or edges) to other nodes.
 
-        To get a merkledag node call ``dag.get(ref)`` or access it via
-        ``dag[ref]``, where ``ref`` can be a ipfs or ipns name or a plain
-        base58 hash of your node::
+    To get a merkledag node call ``dag.get(ref)`` or access it via
+    ``dag[ref]``, where ``ref`` can be a ipfs or ipns name or a plain
+    base58 hash of your node::
 
-           >>> dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
-           Node(QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec)
+       >>> dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
+       Node(QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec)
 
-        The data of a node can be accessed via its ``data`` attribute::
+    The data of a node can be accessed via its ``data`` attribute::
 
-           >>> n = dag["QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"]
-           >>> n.data[5:22].decode()
-           'Hello and Welcome'
+       >>> n = dag["QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"]
+       >>> n.data[5:22].decode()
+       'Hello and Welcome'
 
-        Links can be followed by directly accessing attributes::
+    Links can be followed by directly accessing attributes::
 
-           >>> node = dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
-           >>> node.readme
-           Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
+       >>> node = dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
+       >>> node.readme
+       Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
+
+    You can also interate over a node's links by::
+
+       >>> node = dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
+       >>> for link in node:
+               print(link.name, "->", link.hash)
+	
+       about -> QmZTR5bcpQD7cFgTorqxZDYaew1Wqgfbd2ud9QqGPAkK2V
+       contact -> QmYCvbfNbCwFR45HiNP45rwJgvatpiW38D961L5qAhUM5Y
+       help -> QmY5heUM5qgRubMDD1og9fhCPA6QdkMp3QCwd4s7gJsyE7
+       quick-start -> QmXifYTiYxz8Nxt3LmjaxtQNLYkjdh324L4r81nZSadoST
+       readme -> QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB
+       security-notes -> QmTumTjvcYCAvRRwQ8sDRxh8ezmrcr88YFU7iYNroGGTBZ
+
+    .. py:attribute:: hash
+
+       The node's hash
 
     """
     
