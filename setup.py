@@ -14,9 +14,15 @@ setup(name = "python3-ipfs-api",
 
       url = "https://github.com/jgraef/python3-ipfs-api",
       
-      packages = ["ipfs", "ipfs.api", "ipfs.pb2hack", "ipfs.proto"],
+      packages = ["ipfs", "ipfs.api", "ipfs.proto"],
 
       license = "MIT",
+
+      platforms = ['Any'],
+
+      keywords = ["ipfs"],
+
+      requires = ["requests (>=2.9.1)", "base58 (>=0.2.2)", "pb2nano"],
 
       long_description = """
 python3-ipfs-api is a complete rewrite of [python-ipfs-api](https://github.com/ipfs/python-ipfs-api).
