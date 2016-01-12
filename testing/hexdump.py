@@ -41,9 +41,10 @@ def print_hexdump(data, offset = 0, file = sys.stdout, colored = False):
     
 
 
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     import io
     
+    # #todo; use a context manager to open file ('with' statement)
     f = io.open(0, mode="rb", closefd=False)
     off = 0
     while (True):
