@@ -21,7 +21,7 @@ class DhtApi:
         :param peer_id: The peer ID to run the query against
         :return: TODO
         """
-        return self._rpc.query[key].with_outputenc(codec.JSONV)()
+        return self._rpc.query[peer_id].with_outputenc(codec.JSONV)()
 
 
     def find_providers(self, key):
