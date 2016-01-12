@@ -1,21 +1,20 @@
 # python3-ipfs-api
 
-python3-ipfs-api is a complete rewrite of python-ipfs-api. It defines a whole new interface
-and tries to do more than just wrapping the HTTP API. python3-ipfs-api will
-only support Python 3 (hence the name).
+python3-ipfs-api is a complete rewrite of [python-ipfs-api](https://github.com/ipfs/python-ipfs-api).
+It defines a whole new interface and tries to do more than just wrapping the
+HTTP API. python3-ipfs-api will only support Python 3 (hence the name).
 
-Documentation is available here: http://python3-ipfs-api.readthedocs.org/en/latest/
-
-python3-ipfs-api uses [requests](http://python-requests.org) to issue API calls. Also it has a minimal
-implementation of a protobuf reader/writer for using protobuf encoding where
-possible. This makes it possible to e.g. put/get objects with binary content
-without a problem.
+python3-ipfs-api uses [requests](http://python-requests.org) to issue API
+calls. Also it has a minimal implementation of a protobuf reader/writer for
+using protobuf encoding where possible. This makes it possible to e.g. put/get
+objects with binary content without a problem.
 
 In ipfs.api you'll find the lowlevel API implementation. The high-level API is
-still work in progess and only consists of the ifps.merkledag module. An
+still work in progess and only consists of the ifps.merkledag module at the moment. An
 API for interfacing unixfs in a pythonic way will come soon.
 
-If you want to get started take a look at our `examples/` or read the documentation.
+If you want to get started take a look at our `examples/` or read the
+[documentation](http://python3-ipfs-api.readthedocs.org/en/latest/).
 
 
 ## TODO
