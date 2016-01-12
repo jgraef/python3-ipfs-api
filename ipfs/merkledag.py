@@ -1,5 +1,15 @@
 """
-    merkledag - High-level interface to the IPFS merkledag
+This module is a high-level abstraction to the ipfs.object API.
+
+It provides a pythonic way of interacting with merkledag nodes (a.k.a objects).
+
+To run the following examples start with::
+
+   from ipfs.api import IpfsApi
+   from ipfs.merkledag import Merkledag
+   
+   dag = Merkledag(IpfsApi())
+
 """
 
 from threading import Lock
@@ -17,7 +27,21 @@ class Link:
 
 
     def follow(self):
-        """ Returns the references node. """
+        """
+        Return the references node.
+
+        Example::
+
+           >>> node = dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
+           >>> link = node.get_link("readme")
+           >>> readme = link.follow()
+           Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
+           >>> readme.data[5:22].decode()
+           'Hello and Welcome'
+
+        Normally you don't have to interact with links directly. You can
+        directly follow links by referencing attributes of a Node.
+        """
         
         return self._dag.get(self.hash)
 
@@ -28,7 +52,30 @@ class Link:
 
 
 class Node:
-    """ A merkledag node (a.k.a object). """
+    """ A merkledag node (a.k.a object).
+
+        A merkledag node is a node like in any other graph. It stores some data
+        and can have multiple links (or edges) to other nodes.
+
+        To get a merkledag node call ``dag.get(ref)``, where ``ref`` can be
+        a ipfs or ipns name or a plain base58 hash of your node::
+
+           >>> dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
+           Node(QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec)
+
+        The data of a node can be accessed via its ``data`` attribute::
+
+           >>> n = dag["QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"]
+           >>> n.data[5:22].decode()
+           'Hello and Welcome'
+
+        Links can be followed by directly accessing attributes::
+
+           >>> node = dag["QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec"]
+           >>> node.readme
+           Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
+
+    """
     
     def __init__(self, dag, hash):
         self._dag = dag
@@ -74,7 +121,13 @@ class Node:
 
     @property
     def data(self):
-        """ The data contained in this node. """
+        """
+        The data contained in this node.
+
+        At this moment merkledag nodes always contain bytes objects. This could
+        be changed in future (i.e store any pickable python object), but
+        backwads compability will not be broken.
+        """
         self._lazy_load_data()
         return self._data
 
@@ -87,17 +140,35 @@ class Node:
 
 
     def get_link(self, name):
-        """ Returns a link given its name. """
+        """
+        Return a link by its name.
+
+        :param name: The link name
+        :return:     The link with that name
+        """
         self._lazy_load_links()
         return self._links_map[name]
 
 
     def has_link(self, name):
+        """
+        Return whether this node has a link with the given name.
+
+        :param name: The link name
+        :return:     True if a link with that name exists, False otherwise.
+        """
         return name in self._links_map
 
 
     def get_node(self, name):
-        """ Returns a linked node given the link's name. """
+        """
+        Return a linked node given the link's name.
+
+        :param name: The link name
+        :return:     The node linked by this name
+
+        This is a shortcut for ``node.get_link(name).follow()``
+        """
         return self.get_link(name).follow()
 
 
@@ -144,10 +215,6 @@ class Node:
             raise AttributeError(name)
 
 
-    def __hasattr__(self, name):
-        return self.has_link(name)
-
-
     def __iter__(self):
         return iter(self.links)
 
@@ -171,7 +238,24 @@ class Node:
 
 
 class NodeBuilder:
-    """ Creates nodes. """
+    """
+    The NodeBuilder is used to create new nodes.
+
+    Currently it's the only mechanism available to create a node. Soon there
+    will be methods to *patch* a node in order to create new nodes.
+
+    Example::
+    
+       >>> c1 = dag.builder().data("Child 1").build()
+       >>> c2 = dag.builder().data("Child 2").link("next_sibling", c1).build()
+       >>> r = dag.builder().data("Root")\
+               .link("child_1", c1).link("child_2", c2).build()
+       >>> r
+       Node(QmbvySvD2NUquHeK5bCx783xRNcVg1ULS6rtUzb2dErkdf)
+
+    Try exploring that in your DAG browser:
+    http://localhost:5001/ipfs/QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm/#/objects/object/\ipfs\QmbvySvD2NUquHeK5bCx783xRNcVg1ULS6rtUzb2dErkdf
+    """
     
     def __init__(self, dag):
         self._dag = dag
@@ -180,7 +264,13 @@ class NodeBuilder:
 
 
     def data(self, data):
-        """ Set the data that should be contained in the new node. """
+        """
+        Set the data that will be contained in the new node.
+
+        :param data: A bytes object or string that will be the node's content.
+        :return:     The builder itself to allow chaining.
+        """
+        
         if (type(data) == bytes):
             pass
         elif (type(data) == str):
@@ -194,6 +284,15 @@ class NodeBuilder:
 
 
     def link(self, name, target, size = 0):
+        """
+        Set a link that will be added to the node.
+
+        :param name:   The link name
+        :param target: The merkledag node or hash to which the link points
+        :param size:   The cumulative size of the linked node (optional)
+        :return:     The builder itself to allow chaining.
+        """
+        
         if (isinstance(target, Node)):
             hash = target.hash
         elif (isinstance(target, str)):
@@ -210,6 +309,12 @@ class NodeBuilder:
 
 
     def build(self):
+        """
+        Return the node built by this builder.
+
+        :return: The node with the specified data and links
+        """
+
         links = [{"Name": name, "Hash": l[0], "Size": l[1]} for name, l in self._links.items()]
         node = {"Data": self._data, "Links": links}
         res = self._dag.ipfs.object.put(node)
@@ -218,11 +323,43 @@ class NodeBuilder:
 
 
 class Merkledag:
+    """
+    The root for all merkledag operations.
+
+    To get a node try::
+
+       >>> dag = Merkledag()
+       >>> dag["QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"]
+       Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
+
+    or::
+
+       >>> dag["/ipfs/QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec/readme"]
+       Node(QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB)
+
+    or::
+
+       >>> dag["/ipns/<your peer ID>"]
+
+    """
+    
     def __init__(self, ipfs):
+        """
+        Create an instance of a merkledage.
+
+        :param ipfs: An IpfsApi instance
+        """
         self.ipfs = ipfs
 
 
     def get(self, ref):
+        """
+        Return a merkledag node by it's reference.
+
+        :param ref: Either a IPNS or IPFS name or a plain base58 hash to a node
+        :return:    The references node
+        """
+        
         if (ref.startswith("/ipns/") or ref.startswith("/ipfs")):
             hash = self.ipfs.resolve(ref)["Path"][6:]
         else:
