@@ -110,31 +110,20 @@ class TestIPFS(unittest.TestCase):
         """Use the Block class' stat method to retrieve size and key"""
         resp = self.ipfs.block.stat(self.KEY1)
 
-        test_dict = {
-            'Size': int,
-            'Key': 'hash'
-        }
-
         self.assertTrue(
             all(k in resp.keys() for k in test_dict.keys())
         )
 
-        # #todo: @jgraef implement assertTrue with a validity check of the hash in 'Key'
-
-        #self.assertTrue(
-        #    all(str(type(resp[k])) == str(test_dict[k]) for k in test_dict.keys())
-        #)
-
-        #print(repr(resp))
+        self.assertEqual(resp["Size"], 4)
+        self.assertEqual(resp["Key"], self.KEY1) 
 
     @unittest.skipIf(DEBUG, "debug")
     def test_should_return_block_information(self):
         """Use the Block class' get() method"""
         resp = self.ipfs.block.get(self.KEY1)
 
-        # #todo: @jgraef implement assertTrue with a validity check for the output of print_hexdump
+        self.assertEqual(resp.read(), b'\n\x02\x08\x01')
 
-        print_hexdump(resp.read())
 
     @unittest.skipIf(DEBUG, "debug")
     def test_should_store_string_bytes_in_block(self):
