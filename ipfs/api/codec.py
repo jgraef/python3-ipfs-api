@@ -3,8 +3,7 @@ This modules handles various encodings formats used by the IPFS HTTP API.
 """
 
 import json
-from pb2nano.reader import Pb2WireReader, Pb2Reader
-from pb2nano.writer import Pb2WireWriter, Pb2Writer
+from lib.pb2nano.reader import Pb2WireReader, Pb2Reader
 import codecs
 
 
