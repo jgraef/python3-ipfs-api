@@ -9,7 +9,7 @@ from lib.hexdump import print_hexdump
 
 
 class TestIPFS(unittest.TestCase):
-    DEBUG = True  # set this flag to skip tests while refactoring the unit
+    REFACTORING = True  # set this flag to skip tests while refactoring the unit
 
     @classmethod
     def setUpClass(cls):
@@ -21,47 +21,54 @@ class TestIPFS(unittest.TestCase):
     def setUp(self):
         self.ipfs = IpfsApi()
 
-    @unittest.skipIf(DEBUG, "debug")
+    #@unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_data(self):
-        resp = self.ipfs.object.data(self.KEY1)
-        print_hexdump(resp.read())
+        test_bytes = '|00000000|08 01                                           |..              |'
+        print('TEST1')
+        print(test_bytes)
+        data = self.ipfs.object.data(self.KEY1).read()
+        print('VALUE1'), print_hexdump(data)
+        #self.assertEqual(r, test_bytes)
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_links(self):
         resp = self.ipfs.object.links(self.KEY1)
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_get(self):
         resp = self.ipfs.object.get(self.KEY2)
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_put(self):
         resp = self.ipfs.object.put(self.NODE)
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_stat(self):
         resp = self.ipfs.object.stat(self.KEY1)
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_new(self):
         resp = self.ipfs.object.new()
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_patch_add_link(self):
         resp = self.ipfs.object.patch(self.KEY1).add_link('foo', self.KEY2)
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_patch_rm_link(self):
         resp = self.ipfs.object.patch(self.KEY2).rm_link('ìndex.html')
         print(repr(resp))
 
-    @unittest.skipIf(DEBUG, "debug")
+    @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_patch_set_data(self):
         resp = self.ipfs.object.patch(self.KEY1).set_data(BytesIO(b"foobar"))
         print(repr(resp))
+
+if __name__ == '__main__':
+    unittest.main()

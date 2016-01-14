@@ -1,49 +1,60 @@
 #!/usr/bin/python3
-
+import io
 import sys
 
 try:
     import termcolor
 except ImportError:
     termcolor = None
-    
 
 
+class HexDump:
+    """
+    Utility class to dump an object
 
-def print_hexdump(data, offset = 0, file = sys.stdout, colored = False):
-    def color(s, c):
-        return termcolor.colored(s, c) if (colored and termcolor) else s
+    # #todo: refactor
+    """
+    def __init__(self, data, **kwargs):
+        self.data = data
+        self.offset = kwargs.get('offset', 0)
+        self.file = io.TextIOWrapper(sys.stdout.buffer)
+        self.colored = kwargs.get('colored', False)
 
-    def format_hex(x):
+    def _color(self, s, c):
+        return termcolor.colored(s, c) if (self.colored and termcolor) else s
+
+    @staticmethod
+    def _format_hex(x):
         return "%02x" % x
 
-    def format_ascii(x):
+    def _format_ascii(self, x):
         x = chr(x)
-        return color(x, "green") if (x.isprintable()) else color(".", "red")
-    
-    def print_line(off, data):
-        file.write("|")
-        file.write(color("%08x" % off, "blue"))
-        a = " ".join(map(format_hex, data[:8]))
-        b = " ".join(map(format_hex, data[8:]))
-        file.write("|")
-        file.write(a.ljust(8 * 3 - 1))
-        file.write("  ")
-        file.write(b.ljust(8 * 3 - 1))
-        file.write("|")
-        for b in data:
-            file.write(format_ascii(b))
-        file.write(" " * (16 - len(data)))
-        file.write("|\n")
+        return self._color(x, "green") if (x.isprintable()) else self._color(".", "red")
 
-    for i in range(0, len(data), 16):
-        print_line(offset + i, data[i : i + 16])
-    
+    def print_line(self, off, data):
+        self.file.write("|")
+        self.file.write(self._color("%08x" % off, "blue"))
+        a = " ".join(map(self._format_hex, data[:8]))
+        b = " ".join(map(self._format_hex, data[8:]))
+        self.file.write("|")
+        self.file.write(a.ljust(8 * 3 - 1))
+        self.file.write("  ")
+        self.file.write(b.ljust(8 * 3 - 1))
+        self.file.write("|")
+        for b in data:
+            self.file.write(self._format_ascii(b))
+        self.file.write(" " * (16 - len(data)))
+        self.file.write("|\n")
+
+
+def print_hexdump(data, **kwargs):
+    o = HexDump(data, **kwargs)
+    for i in range(0, len(o.data), 16):
+        o.print_line(o.offset + i, o.data[i: i + 16])
 
 
 if __name__ == "__main__":
-    import io
-    
+
     # #todo; use a context manager to open file ('with' statement)
     f = io.open(0, mode="rb", closefd=False)
     off = 0
@@ -51,6 +62,6 @@ if __name__ == "__main__":
         data = f.read(16)
         if (not data):
             break
-        print_hexdump(data, offset = off, colored = True)
+        print(print_hexdump(data, offset=off, colored=True))
         off += 16
     f.close()
