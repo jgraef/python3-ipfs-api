@@ -2,7 +2,7 @@
 Module containing the PinApi
 """
 
-from . import codec
+from .. import codec
 
 
 class PinApi:

@@ -9,7 +9,7 @@ To get started create an instance of :py:class:`IpfsApi`::
 """
 
 
-from . import codec
+from .. import codec
 from .proxy import HttpProxy
 from .block import BlockApi
 from .dht import DhtApi

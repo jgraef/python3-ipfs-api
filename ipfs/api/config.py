@@ -2,7 +2,7 @@
 This module handles the utilities to read and write to the IPFS node's config.
 """
 
-from . import codec
+from .. import codec
 
 
 class ConfigApi:

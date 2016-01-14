@@ -1,8 +1,8 @@
-from .codec import JSON, PB2
+from .. import codec
 from ..proto.merkledag import PBMerkleDag
 
 
-PBNode = PB2(PBMerkleDag, "PBNode")
+PBNode = codec.PB2(PBMerkleDag, "PBNode")
 
 
 class ObjectPatchApi:
@@ -23,7 +23,7 @@ class ObjectPatchApi:
         :param hash: Hash of object to be linked
         :return:     The new object
         """
-        return self._rpc.with_outputenc(JSON)("add-link", name, hash)
+        return self._rpc.with_outputenc(codec.JSON)("add-link", name, hash)
 
 
     def rm_link(self, name):
@@ -33,7 +33,7 @@ class ObjectPatchApi:
         :param name: Link name
         :return:     The new object
         """
-        return self._rpc.with_outputenc(JSON)("rm-link", name)
+        return self._rpc.with_outputenc(codec.JSON)("rm-link", name)
 
 
     def set_data(self, f):
@@ -91,7 +91,7 @@ class ObjectApi:
             ``Hash``: The hash of the linked object
             ``Size``: The size of the linked object
         """
-        return self._rpc.links[key].with_outputenc(JSON)()
+        return self._rpc.links[key].with_outputenc(codec.JSON)()
 
 
     def get(self, key):
@@ -115,11 +115,11 @@ class ObjectApi:
            ``Hash``:  The hash of the object
            ``Links``: The links of the object. See :py:meth:`~ipfs.api.object.ObjectApi.get`.
         """
-        return self._rpc.put.with_inputenc(PBNode).with_outputenc(JSON)(_in = node)
+        return self._rpc.put.with_inputenc(PBNode).with_outputenc(codec.JSON)(_in = node)
 
 
     def stat(self, key):
-        return self._rpc.stat[key].with_outputenc(JSON)()
+        return self._rpc.stat[key].with_outputenc(codec.JSON)()
 
 
     def new(self, template = None):
@@ -131,7 +131,7 @@ class ObjectApi:
         :return: Same as :py:meth:`~ipfs.api.object.ObjectApi.put`
         
         """
-        return self._rpc.new.with_outputenc(JSON)(template)
+        return self._rpc.new.with_outputenc(codec.JSON)(template)
     
     def patch(self, key):
         """

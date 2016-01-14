@@ -2,7 +2,7 @@
 This module exposes the IPFS file API.
 """
 
-from . import codec
+from .. import codec
 
 
 class FileApi:

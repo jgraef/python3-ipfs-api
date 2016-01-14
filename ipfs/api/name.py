@@ -1,4 +1,8 @@
-from . import codec
+"""
+This modules handles name publishing and resolution
+"""
+
+from .. import codec
 
 
 class NameApi:

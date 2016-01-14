@@ -2,7 +2,7 @@
 This module handles the Distributed Hash Table
 """
 
-from . import codec
+from .. import codec
 
 
 class DhtApi:

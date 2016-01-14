@@ -1,7 +1,8 @@
 """
 This module handles the utilities for the node's blocks.
 """
-from . import codec
+
+from .. import codec
 
 
 class BlockApi:
