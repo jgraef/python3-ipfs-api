@@ -7,6 +7,7 @@ import pickle
 from pb2nano.reader import Pb2WireReader, Pb2Reader
 from pb2nano.writer import Pb2WireWriter, Pb2Writer
 import codecs
+from io import BytesIO
 
 
 class Codec:
@@ -97,7 +98,8 @@ class Json(Codec):
 
     def dump(self, obj, f):
         writer = codecs.getwriter("utf-8")
-        return writer(json.dump(obj, f))
+        f_bytes = writer(f)
+        json.dump(obj, f_bytes)
 
 
 class JsonVector(Codec):
