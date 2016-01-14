@@ -18,6 +18,12 @@ Metadata = Pb2Message("Metadata")\
            .field("required", "string", "MimeType", 1)
 
 
+UnixFsProtocol = Pb2Protocol()\
+                 .enum(DataType)\
+                 .message(Data)\
+                 .message(Metadata)
+
+
 __all__ = [
     "DataType",
     "Data",
