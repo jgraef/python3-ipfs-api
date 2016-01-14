@@ -3,6 +3,7 @@ This modules handles various encodings formats used by the IPFS HTTP API.
 """
 
 import json
+import pickle
 from pb2nano.reader import Pb2WireReader, Pb2Reader
 from pb2nano.writer import Pb2WireWriter, Pb2Writer
 import codecs
@@ -148,12 +149,27 @@ class Protobuf2(Codec):
         return "{}/{}".format(self.name, self.message.name)
 
 
+class Pickle(Codec):
+    """ Encoding and decoding with pickle """
+
+    name = "pickle"
+
+    def load(self, f):
+        return pickle.load(f)
+
+    def dump(self, obj, f):
+        pickle.dump(obj, f)
+
+
 
 JSON = Json()
 """ The singleton instance of the JSON encoding. """
 
 JSONV = JsonVector()
 """ The singleton instance of the JSON vector encoding. """
+
+PICKLE = Pickle()
+""" The singleton instance of the pickle encoding. """
 
 def PB2(protocol, message):
     """
