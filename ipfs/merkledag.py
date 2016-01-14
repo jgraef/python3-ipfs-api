@@ -165,7 +165,7 @@ class Node:
         """
 
         if (self._dag.codec):
-            raise AttributeError("The data attribute is not available, when using a codec")
+            raise RuntimeError("The data attribute is not available, when using a codec")
         self._lazy_load_data()
         return self._value
 
@@ -271,7 +271,7 @@ class Node:
 
 
     def __str__(self):
-        return str(self.data)
+        return str(self.value)
 
 
     def __hash__(self):
