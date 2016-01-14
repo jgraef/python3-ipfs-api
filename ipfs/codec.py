@@ -112,6 +112,11 @@ class JsonVector(Codec):
         for l in f_txt:
             yield json.loads(l)
 
+    def dump(self, obj, f):
+        for x in obj:
+            json.dump(x, f)
+            f.write("\n")
+
 
 class Protobuf2(Codec):
     """ Encoding and decoding of protobuf2 encoded messages. """
