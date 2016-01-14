@@ -13,6 +13,8 @@ To run the following examples start with::
 
 from threading import Lock
 
+# jgraef: TODO: Update docs and examples with value instead of data
+
 
 
 class Link:
@@ -114,33 +116,34 @@ class Node:
     def __init__(self, dag, hash):
         self._dag = dag
         self.hash = hash
-        self._data = None
+        self._value = None
         self._links = None
         self._links_map = None
         self._loaded = False
         self._lock = Lock()
 
 
-    # TODO: split lazy loading of data and links
     def _lazy_load_data(self):
         with self._lock:
-            if (self._data != None):
+            if (self._value != None):
                 return
 
-        data = self._dag.ipfs.object.data(self.hash).read()
-
-        with self._lock:
-            self._data = data
+            f = self._dag.ipfs.object.data(self.hash)
+            if (self._dag.codec):
+                self._value = self._dag.codec.load(f)
+            else:
+                self._value = f.read()
 
 
     def _lazy_load_links(self):
+        # jgraef: TODO: How to handle multiple links with the same name?
+
         with self._lock:
             if (self._links != None):
                 return
 
-        links = self._dag.ipfs.object.links(self.hash)["Links"]
+            links = self._dag.ipfs.object.links(self.hash)["Links"]
 
-        with self._lock:
             self._links = [Link(self._dag, l["Name"], l["Hash"], l["Size"]) for l in links]
             self._links_map = {}
             for l in self._links:
@@ -158,12 +161,22 @@ class Node:
         """
         The data contained in this node.
 
-        At this moment merkledag nodes always contain bytes objects. This could
-        be changed in the future (i.e store any pickable python object), but
-        backwards compability will not be broken.
+        DEPRECATED: Use :py:attr:`value` instead.        
         """
+
+        if (self._dag.codec):
+            raise AttributeError("The data attribute is not available, when using a codec")
         self._lazy_load_data()
-        return self._data
+        return self._value
+
+    @property
+    def value(self):
+        """
+        The value contained in this node.
+        """
+        
+        self._lazy_load_data()
+        return self._value
 
 
     @property
@@ -293,7 +306,7 @@ class NodeBuilder:
     
     def __init__(self, dag):
         self._dag = dag
-        self._data = b""
+        self._value = None
         self._links = {}
 
 
@@ -303,17 +316,24 @@ class NodeBuilder:
 
         :param data: A bytes object or string that will be the node's content.
         :return:     The builder itself to allow chaining.
+
+        DEPRECATED: Use :py:meth:`value` instead.
         """
         
-        if (type(data) == bytes):
-            pass
-        elif (type(data) == str):
-            data = data.encode()
-        else:
-            raise TypeError("Data must be bytes or string")
+        if (self._dag.codec):
+            raise ValueError("Specified raw data with codec")
+        self._value = value
+
+    def value(self, value):
+        """
+        Set the value that will be included in the new node.
+
+        :param value: A value that can be encoded by the coded specified in
+                      :py:class:`Merkledag`.
+        :return:      The builder itself to allow chaining.
+        """
         
-        self._data = data
-        
+        self._value = value
         return self
 
 
@@ -349,8 +369,18 @@ class NodeBuilder:
         :return: The node with the specified data and links
         """
 
+        if (self._dag.codec):
+            data = self._dag.codec.dumps(self._value)
+        else:
+            if (type(data) == bytes):
+                data = self._value
+            elif (type(data) == str):
+                data = self._value.encode()
+            else:
+                raise TypeError("Data must be bytes or string")
+        
         links = [{"Name": name, "Hash": l[0], "Size": l[1]} for name, l in self._links.items()]
-        node = {"Data": self._data, "Links": links}
+        node = {"Data": data, "Links": links}
         res = self._dag.ipfs.object.put(node)
         return self._dag.get(res["Hash"])
 
@@ -377,13 +407,15 @@ class Merkledag:
 
     """
     
-    def __init__(self, ipfs):
+    def __init__(self, ipfs, codec = None):
         """
         Create an instance of a merkledage.
 
         :param ipfs: An IpfsApi instance
+        :param codec: The coded used for encoding and decoding node data
         """
         self.ipfs = ipfs
+        self.codec = codec
 
 
     def get(self, ref):
