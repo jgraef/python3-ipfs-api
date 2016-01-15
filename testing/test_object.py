@@ -18,6 +18,7 @@ class TestIPFS(unittest.TestCase):
         cls.KEY1 = 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn'
         cls.KEY2 = 'QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm'
         cls.NODE = {'Data': b'Hello World'}
+        cls.BASE_NODE = 'QmXarR6rgkQ2fDSHjSY5nM2kuCXKYGViky5nohtwgF65Ec'
 
     def setUp(self):
         self.ipfs = IpfsApi()
@@ -65,6 +66,7 @@ class TestIPFS(unittest.TestCase):
         data = self.tester.chunk
         data = bytearray(data)
         print(data, str(type(data)), data.decode())
+        print('PASSED')
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_data(self):
@@ -75,6 +77,7 @@ class TestIPFS(unittest.TestCase):
         self.assertTrue(isinstance(data, bytes))
         self.assertEqual(data, self.tester.chunk)
         print(data, str(type(data)))
+        print('PASSED')
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_links(self):
@@ -84,13 +87,14 @@ class TestIPFS(unittest.TestCase):
         self.assertEqual(resp['Hash'], self.tester.links['Hash'])
         self.assertEqual(len(resp['Links']), 0)
         print(repr(resp))
+        print('PASSED')
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_get(self):
         print('\n###### TEST object.get() ######')
         resp = self.ipfs.object.get(self.KEY2)
         self.assertEqual(resp['Data'], self.tester.full_object['Data'])
-        print('DONE')
+        print('PASSED')
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_put(self):
@@ -98,12 +102,14 @@ class TestIPFS(unittest.TestCase):
         resp = self.ipfs.object.put(self.NODE)
         self.assertEqual(resp['Hash'], self.tester.node_put['Hash'])
         print(repr(resp))
+        print('PASSED')
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_stat(self):
         print('\n###### TEST object.stat() ######')
         resp = self.ipfs.object.stat(self.KEY1)
         print(repr(resp))
+        print('PASSED')
 
     @unittest.skip("REFACTORING")
     def test_object_new(self):
@@ -124,6 +130,9 @@ class TestIPFS(unittest.TestCase):
     def test_object_patch_set_data(self):
         resp = self.ipfs.object.patch(self.KEY1).set_data(BytesIO(b"foobar"))
         print(repr(resp))
+
+    def tearDown(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
