@@ -54,7 +54,7 @@ class HexDump:
 
 
 def print_data(data, **kwargs):
-    """Return byte strings ()"""
+    """Return byte object"""
     o = HexDump(data, **kwargs)
     return o.data
 
