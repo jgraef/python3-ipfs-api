@@ -10,12 +10,12 @@ except ImportError:
 
 class HexDump:
     """
-    Utility class to dump an object
+    Utility class to test dumping on stdout
 
     # #todo: refactor
     """
     def __init__(self, data, **kwargs):
-        self.data = data
+        self.data = bytearray(data)
         self.offset = kwargs.get('offset', 0)
         self.file = io.TextIOWrapper(sys.stdout.buffer)
         self.colored = kwargs.get('colored', False)
@@ -32,6 +32,7 @@ class HexDump:
         return self._color(x, "green") if (x.isprintable()) else self._color(".", "red")
 
     def print_line(self, off, data):
+        """Wrapper writer"""
         self.file.write("|")
         self.file.write(self._color("%08x" % off, "blue"))
         a = " ".join(map(self._format_hex, data[:8]))
@@ -46,19 +47,20 @@ class HexDump:
         self.file.write(" " * (16 - len(data)))
         self.file.write("|\n")
 
-    def print_std_out(self):
+    def print_hexdump(self):
+        """Raw writing on a TexrIOWrapper"""
         for i in range(0, len(self.data), 16):
             self.print_line(self.offset + i, self.data[i: i + 16])
 
 
-def print_hexdump(data, **kwargs):
+def print_data(data, **kwargs):
+    """Return byte strings ()"""
     o = HexDump(data, **kwargs)
-    print(str(type(o)))
     return o.data
 
 
 if __name__ == '__main__':
     data = b'\x08\x01'
     new = HexDump(data)
-    new.print_std_out()
+    new.print_hexdump()
 

@@ -5,7 +5,7 @@ from io import BytesIO
 __author__ = 'Lorenzo'
 
 from ipfs.api import IpfsApi
-from lib.hexdump import print_hexdump, HexDump
+from lib.hexdump import print_data, HexDump
 from requests.packages.urllib3.response import HTTPResponse
 
 
@@ -23,8 +23,18 @@ class TestIPFS(unittest.TestCase):
         self.ipfs = IpfsApi()
 
     #@unittest.skipIf(REFACTORING, "REFACTORING")
+    def test_hexdump_bytearray_object(self):
+        """Create a Py3 Bytearray object from bytes:
+        - bytes is a list of integers.
+        - bytearray is a Bytes Object"""
+        print('###### TEST BYTES OBJECT #######')
+        data = b'\x08\x01'
+        data = bytearray(data)
+        print(data, str(type(data)), data.decode())
+
+    #@unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_data(self):
-        print('TEST1')
+        print('\n###### TEST object.data() ######')
         data = self.ipfs.object.data(self.KEY1)
         self.assertTrue(isinstance(data, HTTPResponse))
         data = data.read()
