@@ -46,22 +46,19 @@ class HexDump:
         self.file.write(" " * (16 - len(data)))
         self.file.write("|\n")
 
+    def print_std_out(self):
+        for i in range(0, len(self.data), 16):
+            self.print_line(self.offset + i, self.data[i: i + 16])
+
 
 def print_hexdump(data, **kwargs):
     o = HexDump(data, **kwargs)
-    for i in range(0, len(o.data), 16):
-        o.print_line(o.offset + i, o.data[i: i + 16])
+    print(str(type(o)))
+    return o.data
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+    data = b'\x08\x01'
+    new = HexDump(data)
+    new.print_std_out()
 
-    # #todo; use a context manager to open file ('with' statement)
-    f = io.open(0, mode="rb", closefd=False)
-    off = 0
-    while (True):
-        data = f.read(16)
-        if (not data):
-            break
-        print(print_hexdump(data, offset=off, colored=True))
-        off += 16
-    f.close()

@@ -5,7 +5,8 @@ from io import BytesIO
 __author__ = 'Lorenzo'
 
 from ipfs.api import IpfsApi
-from lib.hexdump import print_hexdump
+from lib.hexdump import print_hexdump, HexDump
+from requests.packages.urllib3.response import HTTPResponse
 
 
 class TestIPFS(unittest.TestCase):
@@ -23,12 +24,15 @@ class TestIPFS(unittest.TestCase):
 
     #@unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_data(self):
-        test_bytes = '|00000000|08 01                                           |..              |'
         print('TEST1')
-        print(test_bytes)
-        data = self.ipfs.object.data(self.KEY1).read()
-        print('VALUE1'), print_hexdump(data)
-        #self.assertEqual(r, test_bytes)
+        data = self.ipfs.object.data(self.KEY1)
+        self.assertTrue(isinstance(data, HTTPResponse))
+        data = data.read()
+        self.assertTrue(isinstance(data, bytes))
+        self.assertEqual(data, b'\x08\x01')
+        print(data, str(type(data)))
+
+
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_links(self):
