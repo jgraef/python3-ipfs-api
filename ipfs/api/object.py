@@ -70,33 +70,45 @@ class ObjectApi:
     def __init__(self, root):
         self._rpc = root.object
 
-
     def data(self, key):
         """
-        Return the raw bytes in an IPFS object.
+        Return the raw bytes in an IPFS object. Wrapped into a File-like
+        object.
+
+        Methods that work on raw data use file-like objects
+        (HTTPResponse acts as a file-like object) for input and output.
 
         :param key: Key of the object to retrieve
-        :return:    The raw bytes of that object
+        :return HTTPResponse: The raw bytes of that object
         """
         return self._rpc.data[key]()
-
 
     def links(self, key):
         """
         Return the links pointed to by the specified object.
+
+        Example output:
+            >>> {'Links': [], 'Hash': 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn'}
+            >>> print(ex)
         
         :param key: Key of the object to retrieve
-        :return: A list of links that are dicts that may contain:
+        :return dict: A list of links that are dicts that may contain:
             ``Name``: The name of that link
             ``Hash``: The hash of the linked object
             ``Size``: The size of the linked object
         """
         return self._rpc.links[key].with_outputenc(JSON)()
 
-
     def get(self, key):
         """
         Return the object, i.e. its data and links.
+
+        Example Ouput:
+           >>> ex = {'Links': [{'Hash': 'QmdoDatULjkor1eA1YhBAjmKkkDr7AGEiTrANh7uK17Hfn', 'Size': 4118930, \
+           'Name': 'bundle.js'}, {'Hash': 'QmP5BvrMtqWGirZYyHgz77zhEzLiJbonZVdHPMJRM1xe8G', 'Size': 2506050,\
+            'Name': 'static'}, {'Hash': 'QmecBJMFtTsn4RawUcqFGudevEWcDUym4b6FtemLtKhZy7', 'Size': 181436, \
+            'Name': 'style.css'}], 'Data': b'\x08\x01'}
+           >>> print(ex)
 
         :param key: Key of the object to retrieve
         :return: A dict that may contain:
@@ -105,10 +117,13 @@ class ObjectApi:
         """
         return self._rpc.get[key].with_outputenc(PBNode)()
 
-
     def put(self, node):
         """
         Store an object.
+
+        Example output:
+            >>> ex = {'Hash': 'QmXy2pAWQ3Ef1PqZqi4Z9TJnpDh1trdkCqAvzBgKNNRrSR', 'Links': []}
+            >>> print(ex)
 
         :param node: The node (a.k.a. object) to be stored
         :return: A dict with:
@@ -117,10 +132,20 @@ class ObjectApi:
         """
         return self._rpc.put.with_inputenc(PBNode).with_outputenc(JSON)(_in = node)
 
-
     def stat(self, key):
-        return self._rpc.stat[key].with_outputenc(JSON)()
+        """
+        Return node's statistics.
 
+        Example output:
+            >>> ex = {'DataSize': 2, 'NumLinks': 0, \
+            'Hash': 'QmUNLLsPACCz1vLxQVkXqqLX5R1X345qqfHbsf67hvA3Nn',\
+            'CumulativeSize': 4, 'LinksSize': 2, 'BlockSize': 4}
+            >>> print(ex))
+
+        :param key:
+        :return:
+        """
+        return self._rpc.stat[key].with_outputenc(JSON)()
 
     def new(self, template = None):
         """
