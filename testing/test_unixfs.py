@@ -32,6 +32,7 @@ class TestUnixFs(unittest.TestCase):
         cls.HASH_LOGO_PNG = "026423abaa74bfb92287b467ed88afbf5958df73"
         cls.KEY_WORLD_JPEG = "QmYGVhjTfVvBAAf2SAWMJsTDheo7UuyjQigGahmB8YU3ZH"
         cls.HASH_WORLD_JPEG = "8de181b2c86088e941f2127d6338e60fb9d8b4c5"
+        cls.KEY_README = "QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB"
         cls.KEY_DIR = "QmR9MzChjp1MdFWik7NjEjqKQMzVmBkdK3dz14A6B5Cupm"
         cls.FILES_IMG_DIR = ('bug.png', 'dark-world.jpg', 'favicon.ico', 'git.png', 'help.png', 'info.png', 'log.png', 'logo.png', 'world.jpg')
         
@@ -75,6 +76,20 @@ class TestUnixFs(unittest.TestCase):
             self.assertEqual(0, f.tell())
             f.read(16)
             self.assertEqual(16, f.tell())
+
+    @unittest.skipIf(DEBUG, "debug")
+    def test_read_text_file(self):
+        with self.fs.open(self.KEY_README) as f:
+            self.assertEqual(
+                "Hello and Welcome to IPFS!",
+                f.read(26))
+
+    @unittest.skipIf(DEBUG, "debug")
+    def test_read_more_than_available(self):
+        with self.fs.open(self.KEY_README, "rb") as f:
+            f.read(1090)
+            self.assertEqual(b"\n", f.read(10))
+            self.assertEqual(b"", f.read(10))
 
     def test_dir_by_key(self):
         d = self.fs.dir(self.KEY_DIR)
