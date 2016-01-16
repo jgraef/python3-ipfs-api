@@ -18,14 +18,12 @@ If you want to get started take a look at our `examples/` or read the
 
 ## TODO
 
- * Implemented lowlevel APIs: swarm, bitswap, bootstrap
- * Implement high-level unixfs API
+ * Implement lowlevel APIs: swarm, bitswap, bootstrap
+ * Implement high-level unixfs API (work in progress)
  * Fix ipfs.object.patch
  * Finish ipfs.config
  * Fix ipfs.file.cat. It seems to only work on plain hashes
- 
+
  * Documentation (work in progress)
  * Examples (work in progess)
 
- * @mec-is: Split the testing/test_ipfsapi.py in different files for each API
- * See todos in line in the files
