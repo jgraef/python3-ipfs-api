@@ -9,9 +9,8 @@ calls. Also it uses a minimal implementation of a protobuf2 reader/writer (calle
 [pb2nano](https://github.com/jgraef/python3-pb2nano)) for using protobuf encoding where possible. This makes it
 possible to e.g. put/get objects with binary content without a problem.
 
-In ipfs.api you'll find the lowlevel API implementation. The high-level API is
-still work in progess and only consists of the ifps.merkledag module at the moment. An
-API for interfacing unixfs in a pythonic way will come soon.
+In ipfs.api you'll find the lowlevel API implementation. The high-level API is still work in progess and only consists
+of the `merkledag` and `unixfs` modules at the moment.
 
 If you want to get started take a look at our `examples/` or read the
 [documentation](http://python3-ipfs-api.readthedocs.org/en/latest/).

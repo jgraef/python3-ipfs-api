@@ -1,3 +1,21 @@
+"""
+The unixfs module implements pythonic file-abstractions for unixfs files.
+
+Currently only reading files is implemented.
+
+You need an instance of :py:class:`UnixFs` to access the unixfs.
+
+Example::
+    >>> from ipfs.api import IpfsApi
+    >>> from ipfs.unixfs import UnixFs
+    >>> fs = UnixFs(IpfsApi())
+    >>> with fs.open("QmPZ9gcCEpqKTo6aq61g2nXGUhM4iCL3ewB6LDXZCtioEB") as f:
+	    print(f.read())
+    Hello and Welcome to IPFS!
+    ...
+
+"""
+
 from .proto.unixfs import UnixFsProtocol
 from .merkledag import Merkledag
 from . import codec
@@ -5,6 +23,12 @@ import io
 
 
 class ModeParser:
+    """
+    Parser for mode strings (e.g "r+b").
+
+    This is only used internally.
+    """
+
     def __init__(self, mode):
         self.reading = None
         self.writing = None
@@ -61,7 +85,21 @@ class ModeParser:
 
 
 class Inode:
+    """
+    An Inode can be a directory, file or file block. It implements the mechanism
+    to update the underlying node and notify its parents when a child changes.
+    """
+
     def __init__(self, node, parent, link_index):
+        """
+        Create an Inode instance.
+
+        :param node: The underlying node (see :py:class:`~ipfs.merkledag.Node`)
+        :param parent: The parent Inode or ``None``
+        :param link_index: The index of the link in the parent node where this
+                           node is linked.
+        """
+
         self._node = node
         self._parent = parent
         self._link_index = link_index
@@ -102,12 +140,33 @@ class Inode:
 
 
     def observe(self, observer):
+        """
+        Add an observer. The observer gets notified when the node changed.
+
+        :param observer: A function that takes an :py:class`Inode` as argument.
+        """
+
         self._observers.append(observer)
 
 
 
 class FileBlock(Inode):
+    """
+    Files are split into blocks by unixfs. This class represents such a block.
+    """
+    
     def __init__(self, node, parent, link_index, offset, size):
+        """
+        Create an instance of :py:class`FileBlock`
+
+        :param node: The underlying node (see :py:class:`~ipfs.merkledag.Node`)
+        :param parent: The parent Inode or ``None``
+        :param link_index: The index of the link in the parent node where this
+                           node is linked.
+        :param offset: At which offset in the file this block belongs to
+        :param size:   The size of the block
+        """
+
         Inode.__init__(self, node, parent, link_index)
         self.offset = offset
         self.size = size
@@ -118,8 +177,12 @@ class FileBlock(Inode):
 
 
 class FileStream(io.RawIOBase):
+    """
+    This class implements the :py:class:`~io.RawIOBase` interface. Thus you can
+    use it as any other file opened by :py:func:`open`.
+    """
+    
     def __init__(self, file, mode):
-        self.hash = hash
         self._file = file
         self._mode = mode
         
@@ -129,7 +192,6 @@ class FileStream(io.RawIOBase):
         # TODO: Use size from underlying file
         self._size = 0 if (mode.trunc) else self._file._filesize
         self._pos = self._size if (mode.append) else 0
-
 
 
     def close(self):
@@ -197,6 +259,12 @@ class FileStream(io.RawIOBase):
 
 
 class File(Inode):
+    """
+    A unixfs file.
+
+    Call :py:meth:`~File.open` to open it.
+    """
+
     def __init__(self, node, parent, link_index):
         Inode.__init__(self, node, parent, link_index)
 
@@ -243,6 +311,13 @@ class File(Inode):
         return buf_offset
 
     def open(self, mode = "r"):
+        """
+        Open the file.
+
+        :param mode: The mode to open the file in. See :py:func:`io.open` for
+                     documentation.
+        """
+        
         mode = ModeParser(mode)
         mode.parse()
         f = FileStream(self, mode)
@@ -254,7 +329,19 @@ class File(Inode):
         
 
 class IpnsRoot():
-    def __init__(self, ipfs_name = None):
+    """
+    An IPNS root. It automatically updates the published IPNS record when the
+    underlying unixfs tree changes.
+
+    NOTE: Currently not functional!
+    """
+
+    def __init__(self, ipns_name = None):
+        """
+        Create an IPNS root.
+
+        :param ipns_name: The IPNS name
+        """
         # TODO: resolve name to Node and register as observer
         if (ipns_name):
             raise NotImplementedError("This feature is not yet implemented by go-ipfs")
@@ -264,11 +351,34 @@ class IpnsRoot():
 
 
 class UnixFs:
+    """ The pivot element of the unixfs module. """
+
     def __init__(self, ipfs):
         self._ipfs = ipfs
         self._dag = Merkledag(ipfs, codec = codec.PB2(UnixFsProtocol, "Data"))
 
     def open(self, name, mode = "r"):
+        """
+        Open a unixfs file.
+
+        :param name: Name of the file. Either a plain base58 hash, an IPFS or
+                     IPNS name.
+        :param mode: The mode to open the file in. See :py:func:`io.open` for
+                     documentation. Defaults to "r", which opens the file for
+                     reading in text mode.
+        """
         node = self._dag[name]
         file = File(node, None, None)
         return file.open(mode)
+
+
+
+__all__ = [
+    "ModeParser",
+    "Inode",
+    "FileBlock",
+    "FileStream",
+    "File",
+    "IpnsRoot",
+    "UnixFs"
+]
