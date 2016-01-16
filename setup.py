@@ -22,7 +22,7 @@ setup(name = "python3-ipfs-api",
 
       keywords = ["ipfs"],
 
-      requires = ["requests (>=2.9.1)", "base58 (>=0.2.2)", "python3-pb2nano"],
+      requires = ["requests (>=2.9.1)", "base58 (>=0.2.2)", "pb2nano (>=0.0.1)"],
 
       long_description = """
 python3-ipfs-api is a complete rewrite of [python-ipfs-api](https://github.com/ipfs/python-ipfs-api).
