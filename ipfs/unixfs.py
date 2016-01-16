@@ -197,7 +197,8 @@ class FileStream(io.RawIOBase):
         self._writable = mode.writing
 
         # TODO: Use size from underlying file
-        self._size = 0 if (mode.trunc) else self._file._filesize
+        if (mode.trunc):
+            self._file._trunc(0)
         self._pos = self._size if (mode.append) else 0
 
 
@@ -226,14 +227,16 @@ class FileStream(io.RawIOBase):
     def readinto(self, buf):
         if (not self._mode.reading):
             raise io.UnsupportedOperation("File not opened for reading")
-        return self._file._readinto(buf, self._pos, len(buf))
+        n = self._file._readinto(buf, self._pos, len(buf))
+        self._pos += 16
+        return n
 
     def readall(self):
         return self.read(-1)
 
     def read(self, n = -1):
         if (n == -1):
-            n = self._size
+            n = self._file._filesize
         buf = bytearray(n)
         self.readinto(buf)
         return bytes(buf)
@@ -249,7 +252,7 @@ class FileStream(io.RawIOBase):
         elif (whence == io.SEEK_CUR):
             self._pos += offset
         elif (whence == io.SEEK_END):
-            self._pos = self._file._size + offset
+            self._pos = self._file._filesize + offset
         return self._pos
 
 
@@ -375,7 +378,7 @@ class Directory(Inode):
 
 
     def listdir(self):
-        return tuple(self._children.keys())
+        return tuple((link.name for link in self._node.links))
 
 
     def _get_child(self, name):
@@ -409,7 +412,7 @@ class Directory(Inode):
         d, name = self._resolve_path(path)
         link_index, node = d._get_child(name)
         if (as_child):
-            return Directory(node, self, link_index)
+            return Directory(node, d, link_index)
         else:
             return Directory(node, None, None)
 
@@ -418,7 +421,7 @@ class Directory(Inode):
         d, name = self._resolve_path(path)
         link_index, node = d._get_child(name)
         if (as_child):
-            return File(node, self, link_index)
+            return File(node, d, link_index)
         else:
             return File(node, None, None)
 
@@ -429,6 +432,10 @@ class Directory(Inode):
 
     def create_dir(self, name):
         pass
+
+
+    def __repr__(self):
+        return "<Directory {} @ {}>".format(self.path, self._node.hash)
 
         
 
@@ -455,7 +462,7 @@ class IpnsRoot:
 
 
 class UnixFs:
-    """ The pivot element of the unixfs module. """
+    """ The pivot class of the unixfs module. """
 
     def __init__(self, ipfs):
         self._ipfs = ipfs
@@ -492,6 +499,7 @@ __all__ = [
     "FileBlock",
     "FileStream",
     "File",
+    "Directory",
     "IpnsRoot",
     "UnixFs"
 ]
