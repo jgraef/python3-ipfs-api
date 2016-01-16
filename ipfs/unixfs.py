@@ -22,6 +22,9 @@ from . import codec
 import io
 
 
+# TODO: document the semantics of changes
+
+
 class ModeParser:
     """
     Parser for mode strings (e.g "r+b").
@@ -139,6 +142,10 @@ class Inode:
             self._parent._child_changed(self)
 
 
+    def __eq__(self, other):
+        return isinstance(other, Inode) and self._node == other._node
+
+
     def observe(self, observer):
         """
         Add an observer. The observer gets notified when the node changed.
@@ -253,7 +260,7 @@ class FileStream(io.RawIOBase):
     def truncate(self, size = None):
         if (size == None):
             size = self._pos
-        raise NotImplementedError()
+        self._file._trunc(size)
 
 
 
@@ -287,19 +294,23 @@ class File(Inode):
                 self._blocks.append(FileBlock(link.follow(), self, i, offset, size))
                 offset += size
 
+        self._dirty = set()
+
+
     def _get_chunks(self, offset, length):
         chunks = []
         for block in self._blocks:
+            assert length >= 0
+            if (length == 0):
+                break
             if (block.offset <= offset and offset < block.offset + block.size):
                 chunk_offset = offset - block.offset
                 chunk_size = min((length, block.size - chunk_offset))
                 chunks.append((chunk_offset, chunk_size, block))
                 offset += chunk_size
                 length -= chunk_size
-            assert length >= 0
-            if (length == 0):
-                break
         return chunks
+
 
     def _readinto(self, buf, offset, length):
         buf_offset = 0
@@ -309,6 +320,23 @@ class File(Inode):
             buf_offset += chunk_size
             block._node.flush()
         return buf_offset
+
+    
+    def _trunc(self, size):
+        if (size < self._filesize):
+            blocks = []
+            for chunk_offset, chunk_size, block in self._get_chunks(0, size):
+                assert chunk_offset == 0
+                if (chunk_size == block.size):
+                    blocks.append(block)
+                else:
+                    assert chunk_size < block.size
+                    # TODO shrink block
+                    self._dirty.add(block)
+        elif (size > self._filesize):
+            pass # TODO
+                
+
 
     def open(self, mode = "r"):
         """
@@ -326,9 +354,85 @@ class File(Inode):
             f = io.TextIOWrapper(f)
         return f
 
+
+
+class Directory(Inode):
+    def __init__(self, node, parent, link_index):
+        Inode.__init__(self, node, parent, link_index)
+
+        if (node.value["Type"] != "Directory"):
+            raise IOError("Not a directory")
+        
+        self._children = {}
+        for i, link in enumerate(node.links):
+            self._children[link.name] = (i, link)
+
+        if (parent):
+            name = parent._node.links[link_index].name
+            self.path = "/".join((parent.path, name))
+        else:
+            self.path = "/ipfs/{}".format(node.hash)
+
+
+    def listdir(self):
+        return tuple(self._children.keys())
+
+
+    def _get_child(self, name):
+        try:
+            link_index, link = self._children[name]
+            return link_index, link.follow()
+        except KeyError:
+            raise FileNotFoundError()
+
+
+    def _split_path(self, path):
+        if (type(path) == str):
+            path = tuple(filter(None, path.split("/")))
+        return path
+
+
+    def _resolve_path(self, path):
+        path = self._split_path(path)
+        d = self
+        try:
+            for s in path[:-1]:
+                if (s):
+                    link_index, node = d._get_child(s)
+                    d = Directory(node, d, link_index)
+            return d, path[-1]
+        except FileNotFoundError:
+            raise FileNotFoundError("/".join((self.path,) + path))
+
+
+    def dir(self, path, as_child = True):
+        d, name = self._resolve_path(path)
+        link_index, node = d._get_child(name)
+        if (as_child):
+            return Directory(node, self, link_index)
+        else:
+            return Directory(node, None, None)
+
+
+    def file(self, path, as_child = True):
+        d, name = self._resolve_path(path)
+        link_index, node = d._get_child(name)
+        if (as_child):
+            return File(node, self, link_index)
+        else:
+            return File(node, None, None)
+
+
+    def open(self, path, mode = "r"):
+        return self.file(path).open(mode)
+
+
+    def create_dir(self, name):
+        pass
+
         
 
-class IpnsRoot():
+class IpnsRoot:
     """
     An IPNS root. It automatically updates the published IPNS record when the
     underlying unixfs tree changes.
@@ -357,19 +461,28 @@ class UnixFs:
         self._ipfs = ipfs
         self._dag = Merkledag(ipfs, codec = codec.PB2(UnixFsProtocol, "Data"))
 
-    def open(self, name, mode = "r"):
+
+    def open(self, path, mode = "r"):
         """
         Open a unixfs file.
 
-        :param name: Name of the file. Either a plain base58 hash, an IPFS or
+        :param path: Name of the file. Either a plain base58 hash, an IPFS or
                      IPNS name.
         :param mode: The mode to open the file in. See :py:func:`io.open` for
                      documentation. Defaults to "r", which opens the file for
                      reading in text mode.
         """
-        node = self._dag[name]
-        file = File(node, None, None)
-        return file.open(mode)
+        return self.file(path).open(mode)
+
+
+    def file(self, path):
+        node = self._dag[path]
+        return File(node, None, None)
+
+
+    def dir(self, path):
+        node = self._dag[path]
+        return Directory(node, None, None)
 
 
 
