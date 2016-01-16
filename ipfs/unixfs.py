@@ -228,18 +228,20 @@ class FileStream(io.RawIOBase):
         if (not self._mode.reading):
             raise io.UnsupportedOperation("File not opened for reading")
         n = self._file._readinto(buf, self._pos, len(buf))
-        self._pos += 16
+        self._pos += n
         return n
+
 
     def readall(self):
         return self.read(-1)
+
 
     def read(self, n = -1):
         if (n == -1):
             n = self._file._filesize
         buf = bytearray(n)
-        self.readinto(buf)
-        return bytes(buf)
+        n = self.readinto(buf)
+        return bytes(buf[0:n])
 
 
     def write(self):
