@@ -123,6 +123,13 @@ class Node:
         self._lock = Lock()
 
 
+    def flush(self):
+        """ Flush the cached value and links. """
+        self._value = None
+        self._links = None
+        self._links_map = None
+
+
     def _lazy_load_data(self):
         with self._lock:
             if (self._value != None):
@@ -144,7 +151,7 @@ class Node:
 
             links = self._dag.ipfs.object.links(self.hash)["Links"]
 
-            self._links = [Link(self._dag, l["Name"], l["Hash"], l["Size"]) for l in links]
+            self._links = tuple((Link(self._dag, l["Name"], l["Hash"], l["Size"]) for l in links))
             self._links_map = {}
             for l in self._links:
                 self._links_map[l.name] = l
@@ -307,7 +314,7 @@ class NodeBuilder:
     def __init__(self, dag):
         self._dag = dag
         self._value = None
-        self._links = {}
+        self._links = []
 
 
     def data(self, data):
@@ -322,7 +329,7 @@ class NodeBuilder:
         
         if (self._dag.codec):
             raise ValueError("Specified raw data with codec")
-        self._value = value
+        self._value = data
 
     def value(self, value):
         """
@@ -354,10 +361,7 @@ class NodeBuilder:
         else:
             raise ValueError("Invalid link target: {!r}".format(target))
 
-        if (name in self._links):
-            raise ValueError("Duplicate link name: {}".format(name))
-
-        self._links[name] = (hash, size)
+        self._links.append(Link(self._dag, name, hash, size))
 
         return self
 
@@ -372,14 +376,14 @@ class NodeBuilder:
         if (self._dag.codec):
             data = self._dag.codec.dumps(self._value)
         else:
-            if (type(data) == bytes):
+            if (type(self._value) == bytes):
                 data = self._value
-            elif (type(data) == str):
+            elif (type(self._value) == str):
                 data = self._value.encode()
             else:
                 raise TypeError("Data must be bytes or string")
         
-        links = [{"Name": name, "Hash": l[0], "Size": l[1]} for name, l in self._links.items()]
+        links = [{"Name": l.name, "Hash": l.hash, "Size": l.size} for l in self._links]
         node = {"Data": data, "Links": links}
         res = self._dag.ipfs.object.put(node)
         return self._dag.get(res["Hash"])
