@@ -20,6 +20,7 @@ from .proto.unixfs import UnixFsProtocol
 from .merkledag import Merkledag
 from . import codec
 import io
+from bintrees import FastAVLTree
 
 
 # TODO: document the semantics of changes
@@ -268,6 +269,42 @@ class FileStream(io.RawIOBase):
         self._file._trunc(size)
 
 
+class BlockIndex:
+    def __init__(self):
+        self.avl = FastAVLTree()
+
+    def add_block(self, block):
+        self.avl[block.offset + block.size] = block
+
+    def get_blocks(self, start, length):
+        end = start + length
+        found_block = False
+        for key, block in self.avl.iter_items(start, end):
+            found_block = True
+            yield block
+        try:
+            if (found_block):
+                _, block = self.avl.succ_item(key)
+                if (block.offset < end):
+                    yield block
+            else:
+                _, block = self.avl.ceiling_item(start)
+                yield block
+        except KeyError:
+            pass
+
+    def get_chunks(self, offset, length):
+        for block in self.get_blocks(offset, length):
+            assert length >= 0
+            if (length == 0):
+                break
+            if (block.offset <= offset and offset < block.offset + block.size):
+                chunk_offset = offset - block.offset
+                chunk_size = min((length, block.size - chunk_offset))
+                yield (chunk_offset, chunk_size, block)
+                offset += chunk_size
+                length -= chunk_size
+
 
 
 class File(Inode):
@@ -281,8 +318,7 @@ class File(Inode):
         Inode.__init__(self, node, parent, link_index)
 
         # create block index
-        # TODO: Use an AVL tree for this
-        self._blocks = []
+        self._block_index = BlockIndex()
         super_block = self._node.value
         if (super_block["Type"] != "File"):
             raise IOError("Not a file: {}".format(hash))
@@ -290,36 +326,21 @@ class File(Inode):
         if ("Data" in super_block):
             if (self._filesize == -1):
                 self._filesize = len(super_block["Data"])
-            self._blocks.append(FileBlock(node, parent, link_index, 0, len(super_block["Data"])))
+            self._block_index.add_block(FileBlock(node, parent, link_index, 0, len(super_block["Data"])))
         elif ("blocksize" in super_block):
             offset = 0
             assert len(super_block["blocksize"]) == len(self._node.links)
             for i, t in enumerate(zip(self._node.links, super_block["blocksize"])):
                 link, size = t
-                self._blocks.append(FileBlock(link.follow(), self, i, offset, size))
+                self._block_index.add_block(FileBlock(link.follow(), self, i, offset, size))
                 offset += size
 
         self._dirty = set()
 
 
-    def _get_chunks(self, offset, length):
-        chunks = []
-        for block in self._blocks:
-            assert length >= 0
-            if (length == 0):
-                break
-            if (block.offset <= offset and offset < block.offset + block.size):
-                chunk_offset = offset - block.offset
-                chunk_size = min((length, block.size - chunk_offset))
-                chunks.append((chunk_offset, chunk_size, block))
-                offset += chunk_size
-                length -= chunk_size
-        return chunks
-
-
     def _readinto(self, buf, offset, length):
         buf_offset = 0
-        for chunk_offset, chunk_size, block in self._get_chunks(offset, length):
+        for chunk_offset, chunk_size, block in self._block_index.get_chunks(offset, length):
             buf[buf_offset : buf_offset + chunk_size] =\
                 block._node.value["Data"][chunk_offset : chunk_offset + chunk_size]
             buf_offset += chunk_size
