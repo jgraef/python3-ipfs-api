@@ -12,14 +12,6 @@ ipfs.api.block module
     :undoc-members:
     :show-inheritance:
 
-ipfs.api.codec module
----------------------
-
-.. automodule:: ipfs.api.codec
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 ipfs.api.config module
 ----------------------
 

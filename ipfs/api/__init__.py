@@ -135,7 +135,6 @@ class IpfsApi:
 
 __all__ = [
     "block",
-    "codec",
     "config",
     "dht",
     "file",

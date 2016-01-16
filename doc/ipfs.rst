@@ -21,6 +21,25 @@ ipfs.merkledag module
     :show-inheritance:
 
 
+ipfs.codec module
+---------------------
+
+.. automodule:: ipfs.codec
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+ipfs.unixfs module
+---------------------
+
+.. automodule:: ipfs.unixfs
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+
 Module contents
 ---------------
 
