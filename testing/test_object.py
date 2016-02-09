@@ -73,7 +73,7 @@ class TestIPFS(unittest.TestCase):
     def printable(self, assertion, **kwargs):
         def wrapper(assertion, **kwargs):
             try:
-                assertion(**kwargs)
+                getattr(self, assertion)(**kwargs)
                 print('PASSED')
             except AssertionError as e:
                 pass
@@ -82,8 +82,8 @@ class TestIPFS(unittest.TestCase):
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_hexdump_bytearray_object(self):
         """Create a Py3 Bytearray object from bytes:
-        - bytes is a list of integers.
-        - bytearray is a Bytes Object"""
+        - bytes is a list of integers (binary data).
+        - bytearray is a Bytes Object (buffer)"""
         print('###### TEST BYTES OBJECT #######')
         data = self.tester.chunk
         data = bytearray(data)
@@ -103,6 +103,7 @@ class TestIPFS(unittest.TestCase):
             print(data, str(type(data)))
         except AssertionError as e:
             print('FAILED')
+            raise e
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_links(self):
@@ -116,6 +117,7 @@ class TestIPFS(unittest.TestCase):
             print('PASSED')
         except AssertionError as e:
             print('FAILED')
+            raise e
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_get(self):
@@ -126,6 +128,7 @@ class TestIPFS(unittest.TestCase):
             print('PASSED')
         except AssertionError as e:
             print('FAILED')
+            raise e
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_get_the_default_block(self):
@@ -137,6 +140,7 @@ class TestIPFS(unittest.TestCase):
             print('PASSED')
         except AssertionError as e:
             print('FAILED')
+            raise e
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_put(self):
@@ -148,6 +152,7 @@ class TestIPFS(unittest.TestCase):
             print('PASSED')
         except AssertionError as e:
             print('FAILED')
+            raise e
 
     @unittest.skipIf(REFACTORING, "REFACTORING")
     def test_object_stat(self):
@@ -158,6 +163,7 @@ class TestIPFS(unittest.TestCase):
             print('PASSED')
         except AssertionError as e:
             print('FAILED')
+            raise e
 
     @unittest.skip("REFACTORING")
     def test_object_new(self):
