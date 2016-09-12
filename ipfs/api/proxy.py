@@ -141,6 +141,7 @@ class HttpProxy:
         """
         self.base_url = "http://{}:{:d}{}".format(host, port, self.ENDPOINT)
         self.root = Proxy(self, "")
+        self.session = requests.Session()
 
 
     def _call_endpoint(self, path, args, opts, f_in):
@@ -195,7 +196,7 @@ class HttpProxy:
                     print("  {}: {}".format(k, v))
             print()
 
-        resp = requests.request(method, url, params = params, files = input_files, stream = True)
+        resp = self.session.request(method, url, params = params, files = input_files, stream = True)
 
         if (resp.status_code != 200):
             raise ProxyError(resp.text)
